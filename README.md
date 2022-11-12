@@ -9,3 +9,8 @@ Golang Telegram Database library Wrapper
 
 ### Usage:
 - TODO
+
+### Notes:
+- Build project by specifying installation path for the built TDLib as following:
+
+    `go build -ldflags="-r /usr/local/lib"`
