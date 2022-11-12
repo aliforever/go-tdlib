@@ -35,7 +35,27 @@ type TDLib struct {
 func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Config) *TDLib {
 	// TODO: Add more fields to config
 	if cfg == nil {
-		cfg = &config.Config{}
+		cfg = &config.Config{
+			UseFileDatabase:     true,
+			UseChatInfoDatabase: true,
+			UseMessageDatabase:  true,
+		}
+	}
+
+	if cfg.SystemVersion == "" {
+		cfg.SystemVersion = "1.0.0"
+	}
+
+	if cfg.SystemLanguageCode == "" {
+		cfg.SystemLanguageCode = "en"
+	}
+
+	if cfg.DeviceModel == "" {
+		cfg.DeviceModel = "Server"
+	}
+
+	if cfg.ApplicationVersion == "" {
+		cfg.ApplicationVersion = "1.0.0"
 	}
 
 	if cfg.LogPath != "" {

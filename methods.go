@@ -8,22 +8,22 @@ import (
 
 func (t *TDLib) SetTdlibParameters() error {
 	_, err := t.send(outgoingevents.SetTdlibParameters{
-		UseTestDc:              false,
-		DatabaseDirectory:      "./tdlib-db",
-		FilesDirectory:         "./tdlib-files",
-		DatabaseEncryptionKey:  nil,
-		UseFileDatabase:        false,
-		UseChatInfoDatabase:    true,
-		UseMessageDatabase:     true,
-		UseSecretChats:         false,
+		UseTestDc:              t.cfg.UseTestDC,
+		DatabaseDirectory:      t.cfg.DatabaseDirectory,
+		FilesDirectory:         t.cfg.FilesDirectory,
+		DatabaseEncryptionKey:  t.cfg.DatabaseEncryptionKey,
+		UseFileDatabase:        t.cfg.UseFileDatabase,
+		UseChatInfoDatabase:    t.cfg.UseChatInfoDatabase,
+		UseMessageDatabase:     t.cfg.UseMessageDatabase,
+		UseSecretChats:         t.cfg.UseSecretChats,
 		ApiId:                  t.apiID,
 		ApiHash:                t.apiHash,
-		SystemLanguageCode:     "en",
-		DeviceModel:            "Server",
-		SystemVersion:          "1.0.0",
-		ApplicationVersion:     "1.0.0",
-		EnableStorageOptimizer: false,
-		IgnoreFileNames:        false,
+		SystemLanguageCode:     t.cfg.SystemLanguageCode,
+		DeviceModel:            t.cfg.DeviceModel,
+		SystemVersion:          t.cfg.SystemVersion,
+		ApplicationVersion:     t.cfg.ApplicationVersion,
+		EnableStorageOptimizer: t.cfg.StorageOptimizer,
+		IgnoreFileNames:        t.cfg.FilenamesIgnored,
 	})
 
 	return err
