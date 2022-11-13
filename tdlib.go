@@ -143,31 +143,33 @@ func (t *TDLib) receiveUpdates() error {
 		}
 
 		if t.handlers != nil && t.handlers.RawIncomingEvent != nil {
-			t.handlers.RawIncomingEvent(updateBytes)
+			go t.handlers.RawIncomingEvent(updateBytes)
 		}
 
-		ie, err := incomingevents.IncomingEventFromBytes(updateBytes)
+		ie, err := incomingevents.FromBytes(updateBytes)
 		if err != nil {
 			return err
 		}
 
 		if ie.RequestID != "" {
 			if ch := t.getResponseQueueByRequestID(ie.RequestID); ch != nil {
-				ch <- ie
+				go func(responseChan chan incomingevents.Event, event incomingevents.Event) {
+					responseChan <- event
+				}(ch, ie)
 				continue
 			}
 		}
 
 		if t.handlers != nil && t.handlers.IncomingEvent != nil {
-			t.handlers.IncomingEvent(ie)
+			go t.handlers.IncomingEvent(ie)
 		}
 
 		if t.handlers.OnUpdateConnectionState != nil && ie.Type == "updateConnectionState" && ie.State != nil {
-			t.handlers.OnUpdateConnectionState(ie.State.Type)
+			go t.handlers.OnUpdateConnectionState(ie.State.Type)
 		}
 
 		if t.handlers.OnUpdateAuthorizationState != nil && ie.Type == "updateAuthorizationState" && ie.AuthorizationState != nil {
-			t.handlers.OnUpdateAuthorizationState(ie.AuthorizationState.Type)
+			go t.handlers.OnUpdateAuthorizationState(ie.AuthorizationState.Type)
 		}
 	}
 }

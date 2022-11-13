@@ -22,7 +22,7 @@ type Event struct {
 	Raw []byte `json:"-"`
 }
 
-func IncomingEventFromBytes(b []byte) (Event, error) {
+func FromBytes(b []byte) (Event, error) {
 	var event Event
 	err := json.Unmarshal(b, &event)
 	if err != nil {
