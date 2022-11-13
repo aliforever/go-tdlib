@@ -6,13 +6,13 @@ import (
 	"github.com/aliforever/go-tdlib/outgoingevents"
 )
 
-func (t *TDLib) GetAuthorizationState() (state entities.StateType, err error) {
+func (t *TDLib) GetAuthorizationState() (state entities.AuthorizationStateType, err error) {
 	resp, err := t.send(outgoingevents.GetAuthorizationState{})
 	if err != nil {
 		return "", err
 	}
 
-	return entities.StateType(resp.Type), err
+	return entities.AuthorizationStateType(resp.Type), err
 }
 
 func (t *TDLib) SetTdlibParameters() error {
