@@ -14,7 +14,9 @@ import (
 	"github.com/aliforever/go-tdlib/incomingevents"
 	"github.com/aliforever/go-tdlib/outgoingevents"
 	"github.com/google/uuid"
+	"math/rand"
 	"sync"
+	"time"
 	"unsafe"
 )
 
@@ -33,6 +35,8 @@ type TDLib struct {
 }
 
 func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Config) *TDLib {
+	rand.Seed(time.Now().Unix())
+
 	// TODO: Add more fields to config
 	if cfg == nil {
 		cfg = &config.Config{
@@ -110,6 +114,7 @@ func (t *TDLib) send(data outgoingevents.EventInterface) (incomingevents.Event, 
 	resp := <-ch
 
 	t.responseQueueLocker.Lock()
+	close(ch)
 	delete(t.responseQueue, requestID)
 	t.responseQueueLocker.Unlock()
 
