@@ -11,8 +11,9 @@ type Event struct {
 	Message   json.RawMessage `json:"message"`
 	RequestID string          `json:"@extra"`
 
-	UpdateFile *File           `json:"file"`
-	State      *entities.State `json:"state"`
+	UpdateFile         *File                        `json:"file"`
+	State              *entities.ConnectionState    `json:"state"`
+	AuthorizationState *entities.AuthorizationState `json:"authorization_state"`
 
 	*GetChatsResponse
 	*GetChatResponse

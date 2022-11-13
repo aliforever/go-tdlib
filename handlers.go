@@ -8,8 +8,8 @@ import (
 type Handlers struct {
 	RawIncomingEvent           func(event []byte)
 	IncomingEvent              func(event incomingevents.Event)
-	OnUpdateConnectionState    func(newState entities.StateType)
-	OnUpdateAuthorizationState func(newState entities.StateType)
+	OnUpdateConnectionState    func(newState entities.ConnectionStateType)
+	OnUpdateAuthorizationState func(newState entities.AuthorizationStateType)
 }
 
 func NewHandlers() *Handlers {
@@ -26,12 +26,12 @@ func (h *Handlers) SetIncomingEventHandler(fn func(event incomingevents.Event)) 
 	return h
 }
 
-func (h *Handlers) SetOnUpdateConnectionStateEventHandler(fn func(newState entities.StateType)) *Handlers {
+func (h *Handlers) SetOnUpdateConnectionStateEventHandler(fn func(newState entities.ConnectionStateType)) *Handlers {
 	h.OnUpdateConnectionState = fn
 	return h
 }
 
-func (h *Handlers) SetOnUpdateAuthorizationStateEventHandler(fn func(newState entities.StateType)) *Handlers {
+func (h *Handlers) SetOnUpdateAuthorizationStateEventHandler(fn func(newState entities.AuthorizationStateType)) *Handlers {
 	h.OnUpdateAuthorizationState = fn
 	return h
 }
