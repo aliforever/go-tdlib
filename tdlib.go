@@ -1,7 +1,7 @@
 package tdlib
 
 // #cgo linux CFLAGS: -I/usr/local/include
-// #cgo linux LDFLAGS: -L/usr/local/lib -ltdjson
+// #cgo linux LDFLAGS: -R/usr/local/lib -L/usr/local/lib -ltdjson
 // #include <stdlib.h>
 // #include <td/telegram/td_json_client.h>
 // #include <td/telegram/td_log.h>
