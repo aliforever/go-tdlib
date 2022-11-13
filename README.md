@@ -14,3 +14,4 @@ Golang Telegram Database library Wrapper
 - Build project by specifying installation path for the built TDLib as following:
 
     `go build -ldflags="-r /usr/local/lib"`
+- You can use `Dockerfile-Ubuntu` in the repo to build an image for ubuntu:20.04 and golang v1.19 and then use that to deploy your code

@@ -1,0 +1,23 @@
+FROM ubuntu:20.04
+
+ENV TZ=Asia/Istanbul
+
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install tzdata -y
+
+# Installing & Building TDLib
+RUN apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake g++ -y
+RUN git clone https://github.com/tdlib/td.git
+WORKDIR td
+RUN rm -rf build
+RUN mkdir build
+WORKDIR build
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=../tdlib ..
+RUN cmake --build . --target install
+
+# Installing Golang
+RUN apt install wget -y
+RUN wget https://go.dev/dl/go1.19.3.linux-amd64.tar.gz
+RUN tar -xvf go1.19.3.linux-amd64.tar.gz
+RUN mv go /usr/local
