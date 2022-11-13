@@ -1,6 +1,6 @@
 package outgoingevents
 
-import "linkulu/libs/tdlib2/entities"
+import "github.com/aliforever/go-tdlib/entities"
 
 type SetAuthenticationPhoneNumber struct {
 	PhoneNumber string                                      `json:"phone_number"`
