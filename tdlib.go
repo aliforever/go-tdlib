@@ -164,6 +164,10 @@ func (t *TDLib) receiveUpdates() error {
 		if t.handlers.OnUpdateConnectionState != nil && ie.Type == "updateConnectionState" && ie.State != nil {
 			t.handlers.OnUpdateConnectionState(ie.State.Type)
 		}
+
+		if t.handlers.OnUpdateAuthorizationState != nil && ie.Type == "updateAuthorizationState" && ie.State != nil {
+			t.handlers.OnUpdateAuthorizationState(ie.State.Type)
+		}
 	}
 }
 

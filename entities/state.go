@@ -3,10 +3,13 @@ package entities
 type StateType string
 
 const (
-	StateTypeAwaitingTdlibParameters StateType = "authorizationStateWaitTdlibParameters"
-	StateTypeAwaitingPhoneNumber     StateType = "authorizationStateWaitPhoneNumber"
-	StateTypeAwaitingCode            StateType = "authorizationStateWaitCode"
-	StateTypeReady                   StateType = "authorizationStateReady"
+	StateTypeAuthorizationStateAwaitingTdlibParameters StateType = "authorizationStateWaitTdlibParameters"
+	StateTypeAuthorizationStateAwaitingPhoneNumber     StateType = "authorizationStateWaitPhoneNumber"
+	StateTypeAuthorizationStateAwaitingCode            StateType = "authorizationStateWaitCode"
+	StateTypeAuthorizationStateReady                   StateType = "authorizationStateReady"
+
+	StateTypeConnectionStateReady    StateType = "connectionStateReady"
+	StateTypeConnectionStateUpdating StateType = "connectionStateUpdating"
 )
 
 type State struct {

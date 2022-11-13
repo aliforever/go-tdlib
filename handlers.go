@@ -6,9 +6,10 @@ import (
 )
 
 type Handlers struct {
-	RawIncomingEvent        func(event []byte)
-	IncomingEvent           func(event incomingevents.Event)
-	OnUpdateConnectionState func(newState entities.StateType)
+	RawIncomingEvent           func(event []byte)
+	IncomingEvent              func(event incomingevents.Event)
+	OnUpdateConnectionState    func(newState entities.StateType)
+	OnUpdateAuthorizationState func(newState entities.StateType)
 }
 
 func NewHandlers() *Handlers {
@@ -27,5 +28,10 @@ func (h *Handlers) SetIncomingEventHandler(fn func(event incomingevents.Event)) 
 
 func (h *Handlers) SetOnUpdateConnectionStateEventHandler(fn func(newState entities.StateType)) *Handlers {
 	h.OnUpdateConnectionState = fn
+	return h
+}
+
+func (h *Handlers) SetOnUpdateAuthorizationStateEventHandler(fn func(newState entities.StateType)) *Handlers {
+	h.OnUpdateAuthorizationState = fn
 	return h
 }
