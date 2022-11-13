@@ -154,6 +154,7 @@ func (t *TDLib) receiveUpdates() error {
 		if ie.RequestID != "" {
 			if ch := t.getResponseQueueByRequestID(ie.RequestID); ch != nil {
 				ch <- ie
+				continue
 			}
 		}
 
