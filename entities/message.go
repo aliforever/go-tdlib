@@ -2,7 +2,7 @@ package entities
 
 type Message struct {
 	Type     string `json:"@type"`
-	Id       int    `json:"id"`
+	Id       int64  `json:"id"`
 	SenderId struct {
 		Type   string `json:"@type"`
 		UserId int64  `json:"user_id"`
@@ -25,29 +25,29 @@ type Message struct {
 	IsChannelPost             bool  `json:"is_channel_post"`
 	IsTopicMessage            bool  `json:"is_topic_message"`
 	ContainsUnreadMention     bool  `json:"contains_unread_mention"`
-	Date                      int   `json:"date"`
-	EditDate                  int   `json:"edit_date"`
+	Date                      int64 `json:"date"`
+	EditDate                  int64 `json:"edit_date"`
 	InteractionInfo           struct {
 		Type         string `json:"@type"`
-		ViewCount    int    `json:"view_count"`
-		ForwardCount int    `json:"forward_count"`
+		ViewCount    int64  `json:"view_count"`
+		ForwardCount int64  `json:"forward_count"`
 		ReplyInfo    struct {
 			Type                    string        `json:"@type"`
-			ReplyCount              int           `json:"reply_count"`
+			ReplyCount              int64         `json:"reply_count"`
 			RecentReplierIds        []interface{} `json:"recent_replier_ids"`
-			LastReadInboxMessageId  int           `json:"last_read_inbox_message_id"`
-			LastReadOutboxMessageId int           `json:"last_read_outbox_message_id"`
-			LastMessageId           int           `json:"last_message_id"`
+			LastReadInboxMessageId  int64         `json:"last_read_inbox_message_id"`
+			LastReadOutboxMessageId int64         `json:"last_read_outbox_message_id"`
+			LastMessageId           int64         `json:"last_message_id"`
 		} `json:"reply_info"`
 		Reactions []interface{} `json:"reactions"`
 	} `json:"interaction_info"`
 	UnreadReactions   []interface{} `json:"unread_reactions"`
-	ReplyInChatId     int           `json:"reply_in_chat_id"`
-	ReplyToMessageId  int           `json:"reply_to_message_id"`
-	MessageThreadId   int           `json:"message_thread_id"`
-	Ttl               int           `json:"ttl"`
+	ReplyInChatId     int64         `json:"reply_in_chat_id"`
+	ReplyToMessageId  int64         `json:"reply_to_message_id"`
+	MessageThreadId   int64         `json:"message_thread_id"`
+	Ttl               int64         `json:"ttl"`
 	TtlExpiresIn      float64       `json:"ttl_expires_in"`
-	ViaBotUserId      int           `json:"via_bot_user_id"`
+	ViaBotUserId      int64         `json:"via_bot_user_id"`
 	AuthorSignature   string        `json:"author_signature"`
 	MediaAlbumId      string        `json:"media_album_id"`
 	RestrictionReason string        `json:"restriction_reason"`
