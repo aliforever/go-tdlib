@@ -169,30 +169,30 @@ func (t *TDLib) getResponseQueueByRequestID(requestID string) chan []byte {
 	return nil
 }
 
-func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]interface{}) (ResponseType, error) {
+func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]interface{}) (*ResponseType, error) {
 	requestID := uuid.NewString()
 
 	eventJS, err := outgoingevents.NewEventJSONFromMap(requestID, requestType, data)
 	if err != nil {
-		return ResponseType(nil), err
+		return nil, err
 	}
 
 	return _send[ResponseType](t, requestID, eventJS)
 }
 
 // TODO: Add timeout
-func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (ResponseType, error) {
+func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (*ResponseType, error) {
 	requestID := uuid.NewString()
 
 	eventJS, err := outgoingevents.NewEventJSON(requestID, data)
 	if err != nil {
-		return ResponseType(nil), err
+		return nil, err
 	}
 
 	return _send[ResponseType](t, requestID, eventJS)
 }
 
-func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseType, error) {
+func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseType, error) {
 	ch := make(chan []byte)
 
 	t.responseQueueLocker.Lock()
@@ -201,7 +201,7 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseTy
 
 	err := t.fireStringQuery(str)
 	if err != nil {
-		return ResponseType(nil), err
+		return nil, err
 	}
 
 	resp := <-ch
@@ -214,7 +214,7 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseTy
 	var errEvent incomingevents.ErrorEvent
 	err = json.Unmarshal(resp, &errEvent)
 	if err != nil {
-		return ResponseType(nil), err
+		return nil, err
 	}
 
 	if errEvent.Type == "error" {
@@ -222,16 +222,16 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseTy
 
 		err = json.Unmarshal(errEvent.Message, &str)
 		if err != nil {
-			return ResponseType(nil), err
+			return nil, err
 		}
 
-		return ResponseType(nil), fmt.Errorf("%d: %s", errEvent.Code, str)
+		return nil, fmt.Errorf("%d: %s", errEvent.Code, str)
 	}
 
-	var respObj ResponseType
+	var respObj *ResponseType
 	err = json.Unmarshal(resp, &respObj)
 	if err != nil {
-		return ResponseType(nil), err
+		return nil, err
 	}
 
 	return respObj, nil
