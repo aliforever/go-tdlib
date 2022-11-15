@@ -9,7 +9,7 @@ type event interface {
 type Empty struct{}
 
 type Event[T any] struct {
-	handler func(*T) error
+	handler func(*T)
 }
 
 func (e Event[T]) Handle(data json.RawMessage) error {
@@ -22,5 +22,6 @@ func (e Event[T]) Handle(data json.RawMessage) error {
 		}
 	}
 
-	return e.handler(t)
+	e.handler(t)
+	return nil
 }
