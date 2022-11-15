@@ -7,25 +7,25 @@ import (
 )
 
 func (t *TDLib) CustomRequest(requestType string, parameters map[string]interface{}) (result []byte, err error) {
-	resp, err := t.sendMap(requestType, parameters)
+	resp, err := sendMap[[]byte](t, requestType, parameters)
 	if err != nil {
 		return nil, err
 	}
 
-	return resp.Raw, err
+	return resp, err
 }
 
 func (t *TDLib) GetAuthorizationState() (state entities.AuthorizationStateType, err error) {
-	resp, err := t.send(outgoingevents.GetAuthorizationState{})
+	resp, err := send[entities.AuthorizationStateType](t, outgoingevents.GetAuthorizationState{})
 	if err != nil {
 		return "", err
 	}
 
-	return entities.AuthorizationStateType(resp.Type), err
+	return resp, err
 }
 
 func (t *TDLib) SetTdlibParameters() error {
-	_, err := t.send(outgoingevents.SetTdlibParameters{
+	_, err := send[map[string]interface{}](t, outgoingevents.SetTdlibParameters{
 		UseTestDc:              t.cfg.UseTestDC,
 		DatabaseDirectory:      t.cfg.DatabaseDirectory,
 		FilesDirectory:         t.cfg.FilesDirectory,
@@ -48,7 +48,7 @@ func (t *TDLib) SetTdlibParameters() error {
 }
 
 func (t *TDLib) SetAuthenticationPhoneNumber(phoneNumber string, settings *entities.PhoneNumberAuthenticationSettings) error {
-	_, err := t.send(outgoingevents.SetAuthenticationPhoneNumber{
+	_, err := send[map[string]interface{}](t, outgoingevents.SetAuthenticationPhoneNumber{
 		PhoneNumber: phoneNumber,
 		Settings:    settings,
 	})
@@ -57,14 +57,14 @@ func (t *TDLib) SetAuthenticationPhoneNumber(phoneNumber string, settings *entit
 }
 
 func (t *TDLib) CheckAuthenticationCode(code string) error {
-	_, err := t.send(outgoingevents.CheckAuthenticationCode{
+	_, err := send[map[string]interface{}](t, outgoingevents.CheckAuthenticationCode{
 		Code: code,
 	})
 
 	return err
 }
 
-func (t *TDLib) GetChat(chatID int64) (*incomingevents.GetChatResponse, error) {
+func (t *TDLib) GetChat(chatID int64) (incomingevents.GetChatResponse, error) {
 	resp, err := send[incomingevents.GetChatResponse](t, outgoingevents.GetChat{
 		ChatID: chatID,
 	})
@@ -72,7 +72,7 @@ func (t *TDLib) GetChat(chatID int64) (*incomingevents.GetChatResponse, error) {
 	return resp, err
 }
 
-func (t *TDLib) GetChats(inboxType *entities.ChatList, limit int32) (*incomingevents.GetChatsResponse, error) {
+func (t *TDLib) GetChats(inboxType *entities.ChatList, limit int32) (incomingevents.GetChatsResponse, error) {
 	resp, err := send[incomingevents.GetChatsResponse](t, outgoingevents.GetChats{
 		ChatList: inboxType,
 		Limit:    limit,
@@ -90,7 +90,7 @@ func (t *TDLib) LoadChats(inboxType *entities.ChatList, limit int32) error {
 	return err
 }
 
-func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous bool) (*incomingevents.DownloadFileResponse, error) {
+func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous bool) (incomingevents.DownloadFileResponse, error) {
 	resp, err := send[incomingevents.DownloadFileResponse](t, outgoingevents.DownloadFile{
 		FileID:      fileID,
 		Priority:    priority,
@@ -102,7 +102,7 @@ func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous 
 	return resp, err
 }
 
-func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.GetMessageResponse, error) {
+func (t *TDLib) GetMessage(chatID, messageID int64) (incomingevents.GetMessageResponse, error) {
 	resp, err := send[incomingevents.GetMessageResponse](t, outgoingevents.GetMessage{
 		ChatID:    chatID,
 		MessageID: messageID,
@@ -111,7 +111,7 @@ func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.GetMessageR
 	return resp, err
 }
 
-func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64, onlyLocal bool) (*incomingevents.GetChatHistoryResponse, error) {
+func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64, onlyLocal bool) (incomingevents.GetChatHistoryResponse, error) {
 	resp, err := send[incomingevents.GetChatHistoryResponse](t, outgoingevents.GetChatHistory{
 		ChatID:        chatID,
 		FromMessageID: fromMessageID,

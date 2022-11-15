@@ -169,7 +169,7 @@ func (t *TDLib) getResponseQueueByRequestID(requestID string) chan []byte {
 	return nil
 }
 
-func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]interface{}) (*ResponseType, error) {
+func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]interface{}) (ResponseType, error) {
 	requestID := uuid.NewString()
 
 	eventJS, err := outgoingevents.NewEventJSONFromMap(requestID, requestType, data)
@@ -181,7 +181,7 @@ func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]int
 }
 
 // TODO: Add timeout
-func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (*ResponseType, error) {
+func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (ResponseType, error) {
 	requestID := uuid.NewString()
 
 	eventJS, err := outgoingevents.NewEventJSON(requestID, data)
@@ -192,7 +192,7 @@ func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (*Resp
 	return _send[ResponseType](t, requestID, eventJS)
 }
 
-func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseType, error) {
+func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseType, error) {
 	ch := make(chan []byte)
 
 	t.responseQueueLocker.Lock()
@@ -228,7 +228,7 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseT
 		return nil, fmt.Errorf("%d: %s", errEvent.Code, str)
 	}
 
-	var respObj *ResponseType
+	var respObj ResponseType
 	err = json.Unmarshal(resp, &respObj)
 	if err != nil {
 		return nil, err
