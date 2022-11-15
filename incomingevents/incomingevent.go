@@ -23,9 +23,9 @@ type Event struct {
 	Code    int64           `json:"code,omitempty"`
 	Message json.RawMessage `json:"message,omitempty"`
 
-	UpdateFile         *DownloadFileResponse        `json:"file"`
-	State              *entities.ConnectionState    `json:"state"`
-	AuthorizationState *entities.AuthorizationState `json:"authorization_state"`
+	UpdateFile         *DownloadFileResponse        `json:"file,omitempty"`
+	State              *entities.ConnectionState    `json:"state,omitempty"`
+	AuthorizationState *entities.AuthorizationState `json:"authorization_state,omitempty"`
 
 	Raw []byte `json:"-"`
 }
