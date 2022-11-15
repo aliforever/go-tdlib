@@ -93,20 +93,49 @@ func (t *TDLib) ReceiveUpdates() error {
 
 // TODO: Add send timeout
 func (t *TDLib) send(data outgoingevents.EventInterface) (incomingevents.Event, error) {
-	ch := make(chan incomingevents.Event)
-
 	requestID := uuid.NewString()
-
-	t.responseQueueLocker.Lock()
-	t.responseQueue[requestID] = ch
-	t.responseQueueLocker.Unlock()
 
 	eventJS, err := outgoingevents.NewEventJSON(requestID, data)
 	if err != nil {
 		return incomingevents.Event{}, err
 	}
 
-	err = t.fireStringQuery(eventJS)
+	resp, err := t._send(requestID, eventJS)
+
+	return resp, err
+}
+
+func (t *TDLib) sendMap(requestType string, data map[string]interface{}) (incomingevents.Event, error) {
+	requestID := uuid.NewString()
+
+	eventJS, err := outgoingevents.NewEventJSONFromMap(requestID, requestType, data)
+	if err != nil {
+		return incomingevents.Event{}, err
+	}
+
+	resp, err := t._send(requestID, eventJS)
+
+	return resp, err
+}
+
+func (t *TDLib) fireStringQuery(data string) error {
+	query := C.CString(data)
+
+	defer C.free(unsafe.Pointer(query))
+
+	C.td_json_client_send(t.client, query)
+
+	return nil
+}
+
+func (t *TDLib) _send(requestID string, str string) (incomingevents.Event, error) {
+	ch := make(chan incomingevents.Event)
+
+	t.responseQueueLocker.Lock()
+	t.responseQueue[requestID] = ch
+	t.responseQueueLocker.Unlock()
+
+	err := t.fireStringQuery(str)
 	if err != nil {
 		return incomingevents.Event{}, err
 	}
@@ -123,16 +152,6 @@ func (t *TDLib) send(data outgoingevents.EventInterface) (incomingevents.Event, 
 	}
 
 	return resp, nil
-}
-
-func (t *TDLib) fireStringQuery(data string) error {
-	query := C.CString(data)
-
-	defer C.free(unsafe.Pointer(query))
-
-	C.td_json_client_send(t.client, query)
-
-	return nil
 }
 
 func (t *TDLib) receiveNextUpdate(timeout int64) []byte {

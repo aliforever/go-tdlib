@@ -7,6 +7,15 @@ import (
 	"github.com/aliforever/go-tdlib/outgoingevents"
 )
 
+func (t *TDLib) CustomRequest(requestType string, parameters map[string]interface{}) (result []byte, err error) {
+	resp, err := t.sendMap(requestType, parameters)
+	if err != nil {
+		return nil, err
+	}
+
+	return resp.Raw, err
+}
+
 func (t *TDLib) GetAuthorizationState() (state entities.AuthorizationStateType, err error) {
 	resp, err := t.send(outgoingevents.GetAuthorizationState{})
 	if err != nil {

@@ -31,3 +31,15 @@ func NewEventJSON(requestID string, data EventInterface) (string, error) {
 
 	return string(js), nil
 }
+
+func NewEventJSONFromMap(requestID string, requestType string, data map[string]interface{}) (string, error) {
+	data["@type"] = requestType
+	data["@extra"] = requestID
+
+	js, err := json.Marshal(data)
+	if err != nil {
+		return "", err
+	}
+
+	return string(js), nil
+}
