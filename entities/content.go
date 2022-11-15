@@ -4,6 +4,7 @@ type Content struct {
 	Type     string    `json:"@type"`
 	Document *Document `json:"document"`
 	Video    *Video    `json:"video"`
+	Text     *Text     `json:"text"`
 	Caption  struct {
 		Type     string `json:"@type"`
 		Text     string `json:"text"`
