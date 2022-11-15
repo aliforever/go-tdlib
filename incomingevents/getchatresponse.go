@@ -1,6 +1,8 @@
 package incomingevents
 
 type GetChatResponse struct {
+	Event
+
 	Id   int64 `json:"id"`
 	Type struct {
 		Type         string `json:"@type"`

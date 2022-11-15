@@ -5,21 +5,27 @@ import (
 	"github.com/aliforever/go-tdlib/entities"
 )
 
+type Generic struct {
+	Type      string `json:"@type"`
+	RequestID string `json:"@extra,omitempty"`
+}
+
+type ErrorEvent struct {
+	Generic
+
+	Code    int64           `json:"code"`
+	Message json.RawMessage `json:"message"`
+}
+
 type Event struct {
-	Type      string          `json:"@type"`
-	Code      int64           `json:"code"`
-	Message   json.RawMessage `json:"message"`
-	RequestID string          `json:"@extra"`
+	Generic
+
+	Code    int64           `json:"code,omitempty"`
+	Message json.RawMessage `json:"message,omitempty"`
 
 	UpdateFile         *DownloadFileResponse        `json:"file"`
 	State              *entities.ConnectionState    `json:"state"`
 	AuthorizationState *entities.AuthorizationState `json:"authorization_state"`
-
-	*GetChatsResponse
-	*GetChatResponse
-	*DownloadFileResponse
-	*MessagesResponse
-	*MessageResponse
 
 	Raw []byte `json:"-"`
 }
@@ -32,6 +38,16 @@ func FromBytes(b []byte) (Event, error) {
 	}
 
 	event.Raw = b
+
+	return event, err
+}
+
+func GenericFromBytes(b []byte) (Generic, error) {
+	var event Generic
+	err := json.Unmarshal(b, &event)
+	if err != nil {
+		return Generic{}, err
+	}
 
 	return event, err
 }

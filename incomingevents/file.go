@@ -1,6 +1,8 @@
 package incomingevents
 
 type DownloadFileResponse struct {
+	Event
+
 	Id           int64 `json:"id"`
 	Size         int64 `json:"size"`
 	ExpectedSize int64 `json:"expected_size"`

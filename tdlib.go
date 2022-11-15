@@ -31,7 +31,7 @@ type TDLib struct {
 	handlers *Handlers
 
 	responseQueueLocker sync.Mutex
-	responseQueue       map[string]chan incomingevents.Event
+	responseQueue       map[string]chan []byte
 }
 
 func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Config) *TDLib {
@@ -83,39 +83,12 @@ func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Conf
 		client:        C.td_json_client_create(),
 		cfg:           *cfg,
 		handlers:      handlers,
-		responseQueue: map[string]chan incomingevents.Event{},
+		responseQueue: map[string]chan []byte{},
 	}
 }
 
 func (t *TDLib) ReceiveUpdates() error {
 	return t.receiveUpdates()
-}
-
-// TODO: Add send timeout
-func (t *TDLib) send(data outgoingevents.EventInterface) (incomingevents.Event, error) {
-	requestID := uuid.NewString()
-
-	eventJS, err := outgoingevents.NewEventJSON(requestID, data)
-	if err != nil {
-		return incomingevents.Event{}, err
-	}
-
-	resp, err := t._send(requestID, eventJS)
-
-	return resp, err
-}
-
-func (t *TDLib) sendMap(requestType string, data map[string]interface{}) (incomingevents.Event, error) {
-	requestID := uuid.NewString()
-
-	eventJS, err := outgoingevents.NewEventJSONFromMap(requestID, requestType, data)
-	if err != nil {
-		return incomingevents.Event{}, err
-	}
-
-	resp, err := t._send(requestID, eventJS)
-
-	return resp, err
 }
 
 func (t *TDLib) fireStringQuery(data string) error {
@@ -126,32 +99,6 @@ func (t *TDLib) fireStringQuery(data string) error {
 	C.td_json_client_send(t.client, query)
 
 	return nil
-}
-
-func (t *TDLib) _send(requestID string, str string) (incomingevents.Event, error) {
-	ch := make(chan incomingevents.Event)
-
-	t.responseQueueLocker.Lock()
-	t.responseQueue[requestID] = ch
-	t.responseQueueLocker.Unlock()
-
-	err := t.fireStringQuery(str)
-	if err != nil {
-		return incomingevents.Event{}, err
-	}
-
-	resp := <-ch
-
-	t.responseQueueLocker.Lock()
-	close(ch)
-	delete(t.responseQueue, requestID)
-	t.responseQueueLocker.Unlock()
-
-	if resp.Type == "error" {
-		return incomingevents.Event{}, fmt.Errorf("%d: %s", resp.Code, resp.Message)
-	}
-
-	return resp, nil
 }
 
 func (t *TDLib) receiveNextUpdate(timeout int64) []byte {
@@ -166,39 +113,52 @@ func (t *TDLib) receiveUpdates() error {
 			continue
 		}
 
-		if t.handlers != nil && t.handlers.RawIncomingEvent != nil {
-			go t.handlers.RawIncomingEvent(updateBytes)
+		if t.handlers != nil && t.handlers.rawIncomingEvent != nil {
+			go t.handlers.rawIncomingEvent(updateBytes)
 		}
 
-		ie, err := incomingevents.FromBytes(updateBytes)
+		ie, err := incomingevents.GenericFromBytes(updateBytes)
 		if err != nil {
 			return err
 		}
 
 		if ie.RequestID != "" {
 			if ch := t.getResponseQueueByRequestID(ie.RequestID); ch != nil {
-				go func(responseChan chan incomingevents.Event, event incomingevents.Event) {
+				go func(responseChan chan []byte, event []byte) {
 					responseChan <- event
-				}(ch, ie)
+				}(ch, updateBytes)
 				continue
 			}
 		}
 
-		if t.handlers != nil && t.handlers.IncomingEvent != nil {
-			go t.handlers.IncomingEvent(ie)
+		event, err := incomingevents.FromBytes(updateBytes)
+		if err != nil {
+			return err
 		}
 
-		if t.handlers.OnUpdateConnectionState != nil && ie.Type == "updateConnectionState" && ie.State != nil {
-			go t.handlers.OnUpdateConnectionState(ie.State.Type)
+		if t.handlers != nil && t.handlers.incomingEvent != nil {
+			go t.handlers.incomingEvent(event)
 		}
 
-		if t.handlers.OnUpdateAuthorizationState != nil && ie.Type == "updateAuthorizationState" && ie.AuthorizationState != nil {
-			go t.handlers.OnUpdateAuthorizationState(ie.AuthorizationState.Type)
+		if t.handlers.onUpdateConnectionState != nil && event.Type == "updateConnectionState" && event.State != nil {
+			go t.handlers.onUpdateConnectionState(event.State.Type)
+		}
+
+		if t.handlers.onUpdateAuthorizationState != nil && event.Type == "updateAuthorizationState" && event.AuthorizationState != nil {
+			go t.handlers.onUpdateAuthorizationState(event.AuthorizationState.Type)
+		}
+
+		t.handlers.eventTypeHandlerLocker.Lock()
+		if handler, ok := t.handlers.eventTypeHandlers[event.Type]; ok && handler != nil {
+			err := handler.Handle(updateBytes)
+			if err != nil {
+				return err
+			}
 		}
 	}
 }
 
-func (t *TDLib) getResponseQueueByRequestID(requestID string) chan incomingevents.Event {
+func (t *TDLib) getResponseQueueByRequestID(requestID string) chan []byte {
 	t.responseQueueLocker.Lock()
 	defer t.responseQueueLocker.Unlock()
 
@@ -207,4 +167,72 @@ func (t *TDLib) getResponseQueueByRequestID(requestID string) chan incomingevent
 	}
 
 	return nil
+}
+
+func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]interface{}) (*ResponseType, error) {
+	requestID := uuid.NewString()
+
+	eventJS, err := outgoingevents.NewEventJSONFromMap(requestID, requestType, data)
+	if err != nil {
+		return nil, err
+	}
+
+	return _send[ResponseType](t, requestID, eventJS)
+}
+
+// TODO: Add timeout
+func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (*ResponseType, error) {
+	requestID := uuid.NewString()
+
+	eventJS, err := outgoingevents.NewEventJSON(requestID, data)
+	if err != nil {
+		return nil, err
+	}
+
+	return _send[ResponseType](t, requestID, eventJS)
+}
+
+func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseType, error) {
+	ch := make(chan []byte)
+
+	t.responseQueueLocker.Lock()
+	t.responseQueue[requestID] = ch
+	t.responseQueueLocker.Unlock()
+
+	err := t.fireStringQuery(str)
+	if err != nil {
+		return nil, err
+	}
+
+	resp := <-ch
+
+	t.responseQueueLocker.Lock()
+	close(ch)
+	delete(t.responseQueue, requestID)
+	t.responseQueueLocker.Unlock()
+
+	var errEvent incomingevents.ErrorEvent
+	err = json.Unmarshal(resp, &errEvent)
+	if err != nil {
+		return nil, err
+	}
+
+	if errEvent.Type == "error" {
+		var str string
+
+		err = json.Unmarshal(errEvent.Message, &str)
+		if err != nil {
+			return nil, err
+		}
+
+		return nil, fmt.Errorf("%d: %s", errEvent.Code, str)
+	}
+
+	var respObj *ResponseType
+	err = json.Unmarshal(resp, &respObj)
+	if err != nil {
+		return nil, err
+	}
+
+	return respObj, nil
 }

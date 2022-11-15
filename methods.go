@@ -65,24 +65,24 @@ func (t *TDLib) CheckAuthenticationCode(code string) error {
 }
 
 func (t *TDLib) GetChat(chatID int64) (*incomingevents.GetChatResponse, error) {
-	resp, err := t.send(outgoingevents.GetChat{
+	resp, err := send[incomingevents.GetChatResponse](t, outgoingevents.GetChat{
 		ChatID: chatID,
 	})
 
-	return resp.GetChatResponse, err
+	return resp, err
 }
 
 func (t *TDLib) GetChats(inboxType *entities.ChatList, limit int32) (*incomingevents.GetChatsResponse, error) {
-	resp, err := t.send(outgoingevents.GetChats{
+	resp, err := send[incomingevents.GetChatsResponse](t, outgoingevents.GetChats{
 		ChatList: inboxType,
 		Limit:    limit,
 	})
 
-	return resp.GetChatsResponse, err
+	return resp, err
 }
 
 func (t *TDLib) LoadChats(inboxType *entities.ChatList, limit int32) error {
-	_, err := t.send(outgoingevents.LoadChats{
+	_, err := send[map[string]interface{}](t, outgoingevents.LoadChats{
 		ChatList: inboxType,
 		Limit:    limit,
 	})
@@ -91,7 +91,7 @@ func (t *TDLib) LoadChats(inboxType *entities.ChatList, limit int32) error {
 }
 
 func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous bool) (*incomingevents.DownloadFileResponse, error) {
-	resp, err := t.send(outgoingevents.DownloadFile{
+	resp, err := send[incomingevents.DownloadFileResponse](t, outgoingevents.DownloadFile{
 		FileID:      fileID,
 		Priority:    priority,
 		Offset:      offset,
@@ -99,20 +99,20 @@ func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous 
 		Synchronous: synchronous,
 	})
 
-	return resp.DownloadFileResponse, err
+	return resp, err
 }
 
-func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.MessageResponse, error) {
-	resp, err := t.send(outgoingevents.GetMessage{
+func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.GetMessageResponse, error) {
+	resp, err := send[incomingevents.GetMessageResponse](t, outgoingevents.GetMessage{
 		ChatID:    chatID,
 		MessageID: messageID,
 	})
 
-	return resp.MessageResponse, err
+	return resp, err
 }
 
-func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64, onlyLocal bool) (*incomingevents.MessagesResponse, error) {
-	resp, err := t.send(outgoingevents.GetChatHistory{
+func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64, onlyLocal bool) (*incomingevents.GetChatHistoryResponse, error) {
+	resp, err := send[incomingevents.GetChatHistoryResponse](t, outgoingevents.GetChatHistory{
 		ChatID:        chatID,
 		FromMessageID: fromMessageID,
 		Offset:        offset,
@@ -120,5 +120,5 @@ func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64
 		OnlyLocal:     onlyLocal,
 	})
 
-	return resp.MessagesResponse, err
+	return resp, err
 }

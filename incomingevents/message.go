@@ -2,4 +2,4 @@ package incomingevents
 
 import "github.com/aliforever/go-tdlib/entities"
 
-type MessageResponse entities.Message
+type GetMessageResponse entities.Message
