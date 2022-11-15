@@ -174,7 +174,7 @@ func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]int
 
 	eventJS, err := outgoingevents.NewEventJSONFromMap(requestID, requestType, data)
 	if err != nil {
-		return nil, err
+		return ResponseType(nil), err
 	}
 
 	return _send[ResponseType](t, requestID, eventJS)
@@ -186,7 +186,7 @@ func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (Respo
 
 	eventJS, err := outgoingevents.NewEventJSON(requestID, data)
 	if err != nil {
-		return nil, err
+		return ResponseType(nil), err
 	}
 
 	return _send[ResponseType](t, requestID, eventJS)
@@ -201,7 +201,7 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseTy
 
 	err := t.fireStringQuery(str)
 	if err != nil {
-		return nil, err
+		return ResponseType(nil), err
 	}
 
 	resp := <-ch
@@ -214,7 +214,7 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseTy
 	var errEvent incomingevents.ErrorEvent
 	err = json.Unmarshal(resp, &errEvent)
 	if err != nil {
-		return nil, err
+		return ResponseType(nil), err
 	}
 
 	if errEvent.Type == "error" {
@@ -222,16 +222,16 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (ResponseTy
 
 		err = json.Unmarshal(errEvent.Message, &str)
 		if err != nil {
-			return nil, err
+			return ResponseType(nil), err
 		}
 
-		return nil, fmt.Errorf("%d: %s", errEvent.Code, str)
+		return ResponseType(nil), fmt.Errorf("%d: %s", errEvent.Code, str)
 	}
 
 	var respObj ResponseType
 	err = json.Unmarshal(resp, &respObj)
 	if err != nil {
-		return nil, err
+		return ResponseType(nil), err
 	}
 
 	return respObj, nil
