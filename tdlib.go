@@ -148,14 +148,24 @@ func (t *TDLib) receiveUpdates() error {
 			go t.handlers.onUpdateAuthorizationState(event.AuthorizationState.Type)
 		}
 
-		t.handlers.eventTypeHandlerLocker.Lock()
-		if handler, ok := t.handlers.eventTypeHandlers[event.Type]; ok && handler != nil {
+		if handler := t.getEventTypeHandler(event.Type); handler != nil {
 			err := handler.Handle(updateBytes)
 			if err != nil {
 				return err
 			}
 		}
 	}
+}
+
+func (t *TDLib) getEventTypeHandler(eventType string) event {
+	t.handlers.eventTypeHandlerLocker.Lock()
+	defer t.handlers.eventTypeHandlerLocker.Unlock()
+
+	if handler, ok := t.handlers.eventTypeHandlers[eventType]; ok && handler != nil {
+		return handler
+	}
+
+	return nil
 }
 
 func (t *TDLib) getResponseQueueByRequestID(requestID string) chan []byte {
