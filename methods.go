@@ -90,19 +90,7 @@ func (t *TDLib) LoadChats(inboxType *entities.ChatList, limit int32) error {
 	return err
 }
 
-func (t *TDLib) GetRemoteFile(fileID, priority, offset, limit int32, synchronous bool) (*incomingevents.DownloadFileResponse, error) {
-	resp, err := t.send(outgoingevents.DownloadFile{
-		FileID:      fileID,
-		Priority:    priority,
-		Offset:      offset,
-		Limit:       limit,
-		Synchronous: synchronous,
-	})
-
-	return resp.DownloadFileResponse, err
-}
-
-func (t *TDLib) DownloadFile(fileID, priority, offset, limit int32, synchronous bool) (*incomingevents.DownloadFileResponse, error) {
+func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous bool) (*incomingevents.DownloadFileResponse, error) {
 	resp, err := t.send(outgoingevents.DownloadFile{
 		FileID:      fileID,
 		Priority:    priority,
