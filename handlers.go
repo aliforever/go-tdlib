@@ -20,7 +20,7 @@ func NewHandlers() *Handlers {
 	return &Handlers{eventTypeHandlers: map[string]event{}}
 }
 
-func newEvent[T any](handler func(data *T) error) Event[T] {
+func NewEventHandler[T any](handler func(data *T) error) Event[T] {
 	return Event[T]{handler: handler}
 }
 
