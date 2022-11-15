@@ -1,6 +1,7 @@
 package tdlib
 
 import (
+	"fmt"
 	"github.com/aliforever/go-tdlib/entities"
 	"github.com/aliforever/go-tdlib/incomingevents"
 	"github.com/aliforever/go-tdlib/outgoingevents"
@@ -91,4 +92,14 @@ func (t *TDLib) DownloadFile(fileID, priority, offset, limit int32, synchronous 
 	})
 
 	return resp.File, err
+}
+
+func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.File, error) {
+	resp, err := t.send(outgoingevents.GetMessage{
+		ChatID:    chatID,
+		MessageID: messageID,
+	})
+
+	fmt.Println(string(resp.Raw))
+	return nil, err
 }
