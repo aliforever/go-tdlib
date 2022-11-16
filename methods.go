@@ -65,6 +65,14 @@ func (t *TDLib) CheckAuthenticationCode(code string) error {
 	return err
 }
 
+func (t *TDLib) CheckAuthenticationPassword(password string) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.CheckAuthenticationPassword{
+		Password: password,
+	})
+
+	return err
+}
+
 func (t *TDLib) GetChat(chatID int64) (*incomingevents.GetChatResponse, error) {
 	resp, err := send[incomingevents.GetChatResponse](t, outgoingevents.GetChat{
 		ChatID: chatID,
