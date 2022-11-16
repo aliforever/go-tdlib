@@ -6,6 +6,7 @@ const (
 	AuthorizationStateTypeAwaitingTdlibParameters AuthorizationStateType = "authorizationStateWaitTdlibParameters"
 	AuthorizationStateTypeAwaitingPhoneNumber     AuthorizationStateType = "authorizationStateWaitPhoneNumber"
 	AuthorizationStateTypeAwaitingCode            AuthorizationStateType = "authorizationStateWaitCode"
+	AuthorizationStateTypeAwaitingPassword        AuthorizationStateType = "authorizationStateWaitPassword"
 	AuthorizationStateTypeReady                   AuthorizationStateType = "authorizationStateReady"
 )
 
