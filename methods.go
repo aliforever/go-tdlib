@@ -73,6 +73,23 @@ func (t *TDLib) CheckAuthenticationPassword(password string) error {
 	return err
 }
 
+func (t *TDLib) RegisterUser(firstName, lastName string) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.RegisterUser{
+		FirstName: firstName,
+		LastName:  lastName,
+	})
+
+	return err
+}
+
+func (t *TDLib) AcceptTermsOfService(termsOfServiceID string) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.AcceptTermsOfService{
+		TermsOfServiceID: termsOfServiceID,
+	})
+
+	return err
+}
+
 func (t *TDLib) GetChat(chatID int64) (*incomingevents.GetChatResponse, error) {
 	resp, err := send[incomingevents.GetChatResponse](t, outgoingevents.GetChat{
 		ChatID: chatID,

@@ -7,6 +7,7 @@ const (
 	AuthorizationStateTypeAwaitingPhoneNumber     AuthorizationStateType = "authorizationStateWaitPhoneNumber"
 	AuthorizationStateTypeAwaitingCode            AuthorizationStateType = "authorizationStateWaitCode"
 	AuthorizationStateTypeAwaitingPassword        AuthorizationStateType = "authorizationStateWaitPassword"
+	AuthorizationStateTypeAwaitingRegistration    AuthorizationStateType = "authorizationStateWaitRegistration"
 	AuthorizationStateTypeReady                   AuthorizationStateType = "authorizationStateReady"
 )
 
