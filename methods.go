@@ -128,6 +128,16 @@ func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous 
 	return resp, err
 }
 
+func (t *TDLib) ReadFilePart(fileID, offset, count int64) ([]byte, error) {
+	resp, err := send[incomingevents.ReadFilePart](t, outgoingevents.ReadFilePart{
+		FileID: fileID,
+		Offset: offset,
+		Count:  count,
+	})
+
+	return resp.Data, err
+}
+
 func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.GetMessageResponse, error) {
 	resp, err := send[incomingevents.GetMessageResponse](t, outgoingevents.GetMessage{
 		ChatID:    chatID,
