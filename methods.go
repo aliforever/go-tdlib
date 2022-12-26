@@ -134,8 +134,11 @@ func (t *TDLib) ReadFilePart(fileID, offset, count int64) ([]byte, error) {
 		Offset: offset,
 		Count:  count,
 	})
+	if err != nil {
+		return nil, err
+	}
 
-	return resp.Data, err
+	return resp.Data, nil
 }
 
 func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.GetMessageResponse, error) {
