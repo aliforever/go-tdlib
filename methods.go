@@ -91,20 +91,16 @@ func (t *TDLib) AcceptTermsOfService(termsOfServiceID string) error {
 }
 
 func (t *TDLib) GetChat(chatID int64) (*incomingevents.GetChatResponse, error) {
-	resp, err := send[incomingevents.GetChatResponse](t, outgoingevents.GetChat{
+	return send[incomingevents.GetChatResponse](t, outgoingevents.GetChat{
 		ChatID: chatID,
 	})
-
-	return resp, err
 }
 
 func (t *TDLib) GetChats(inboxType *entities.ChatList, limit int32) (*incomingevents.GetChatsResponse, error) {
-	resp, err := send[incomingevents.GetChatsResponse](t, outgoingevents.GetChats{
+	return send[incomingevents.GetChatsResponse](t, outgoingevents.GetChats{
 		ChatList: inboxType,
 		Limit:    limit,
 	})
-
-	return resp, err
 }
 
 func (t *TDLib) LoadChats(inboxType *entities.ChatList, limit int32) error {
@@ -117,47 +113,43 @@ func (t *TDLib) LoadChats(inboxType *entities.ChatList, limit int32) error {
 }
 
 func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous bool) (*incomingevents.DownloadFileResponse, error) {
-	resp, err := send[incomingevents.DownloadFileResponse](t, outgoingevents.DownloadFile{
+	return send[incomingevents.DownloadFileResponse](t, outgoingevents.DownloadFile{
 		FileID:      fileID,
 		Priority:    priority,
 		Offset:      offset,
 		Limit:       limit,
 		Synchronous: synchronous,
 	})
-
-	return resp, err
 }
 
-func (t *TDLib) ReadFilePart(fileID, offset, count int64) ([]byte, error) {
-	resp, err := send[incomingevents.ReadFilePart](t, outgoingevents.ReadFilePart{
+func (t *TDLib) ReadFilePart(fileID, offset, count int64) (*incomingevents.ReadFilePart, error) {
+	return send[incomingevents.ReadFilePart](t, outgoingevents.ReadFilePart{
 		FileID: fileID,
 		Offset: offset,
 		Count:  count,
 	})
-	if err != nil {
-		return nil, err
-	}
+}
 
-	return resp.Data, nil
+func (t *TDLib) GetRemoteFile(remoteFileID string, fileType *entities.FileType) (*incomingevents.GetRemoteFile, error) {
+	return send[incomingevents.GetRemoteFile](t, outgoingevents.GetRemoteFile{
+		RemoteFileID: remoteFileID,
+		FileType:     fileType,
+	})
 }
 
 func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.GetMessageResponse, error) {
-	resp, err := send[incomingevents.GetMessageResponse](t, outgoingevents.GetMessage{
+	return send[incomingevents.GetMessageResponse](t, outgoingevents.GetMessage{
 		ChatID:    chatID,
 		MessageID: messageID,
 	})
-
-	return resp, err
 }
 
 func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64, onlyLocal bool) (*incomingevents.GetChatHistoryResponse, error) {
-	resp, err := send[incomingevents.GetChatHistoryResponse](t, outgoingevents.GetChatHistory{
+	return send[incomingevents.GetChatHistoryResponse](t, outgoingevents.GetChatHistory{
 		ChatID:        chatID,
 		FromMessageID: fromMessageID,
 		Offset:        offset,
 		Limit:         limit,
 		OnlyLocal:     onlyLocal,
 	})
-
-	return resp, err
 }
