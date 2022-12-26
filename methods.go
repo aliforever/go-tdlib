@@ -130,8 +130,8 @@ func (t *TDLib) ReadFilePart(fileID, offset, count int64) (*incomingevents.ReadF
 	})
 }
 
-func (t *TDLib) GetRemoteFile(remoteFileID string, fileType *entities.FileType) (*incomingevents.GetRemoteFile, error) {
-	return send[incomingevents.GetRemoteFile](t, outgoingevents.GetRemoteFile{
+func (t *TDLib) GetRemoteFile(remoteFileID string, fileType *entities.FileType) (*entities.File, error) {
+	return send[entities.File](t, outgoingevents.GetRemoteFile{
 		RemoteFileID: remoteFileID,
 		FileType:     fileType,
 	})
