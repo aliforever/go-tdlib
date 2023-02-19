@@ -5,7 +5,7 @@ type Content struct {
 	Document  *Document  `json:"document"`
 	Video     *Video     `json:"video"`
 	Audio     *Audio     `json:"audio"`
-	VoiceNote *VoiceNote `json:"voiceNote"`
+	VoiceNote *VoiceNote `json:"voice_note"`
 	Text      *Text      `json:"text"`
 	Caption   struct {
 		Type     string `json:"@type"`
