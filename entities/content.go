@@ -1,11 +1,13 @@
 package entities
 
 type Content struct {
-	Type     string    `json:"@type"`
-	Document *Document `json:"document"`
-	Video    *Video    `json:"video"`
-	Text     *Text     `json:"text"`
-	Caption  struct {
+	Type      string     `json:"@type"`
+	Document  *Document  `json:"document"`
+	Video     *Video     `json:"video"`
+	Audio     *Audio     `json:"audio"`
+	VoiceNote *VoiceNote `json:"voiceNote"`
+	Text      *Text      `json:"text"`
+	Caption   struct {
 		Type     string `json:"@type"`
 		Text     string `json:"text"`
 		Entities []struct {
