@@ -2,6 +2,7 @@ package entities
 
 type Content struct {
 	Type      string     `json:"@type"`
+	Animation *Animation `json:"animation"`
 	Document  *Document  `json:"document"`
 	Video     *Video     `json:"video"`
 	Audio     *Audio     `json:"audio"`
