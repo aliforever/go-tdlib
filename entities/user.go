@@ -1,7 +1,7 @@
 package entities
 
 type User struct {
-	Id        int    `json:"id"`
+	Id        int64  `json:"id"`
 	FirstName string `json:"first_name"`
 	LastName  string `json:"last_name"`
 	Usernames struct {
@@ -13,16 +13,16 @@ type User struct {
 	PhoneNumber string `json:"phone_number"`
 	Status      struct {
 		Type    string `json:"@type"`
-		Expires int    `json:"expires"`
+		Expires int64  `json:"expires"`
 	} `json:"status"`
 	ProfilePhoto struct {
 		Type  string `json:"@type"`
 		Id    string `json:"id"`
 		Small struct {
 			Type         string `json:"@type"`
-			Id           int    `json:"id"`
-			Size         int    `json:"size"`
-			ExpectedSize int    `json:"expected_size"`
+			Id           int64  `json:"id"`
+			Size         int64  `json:"size"`
+			ExpectedSize int64  `json:"expected_size"`
 			Local        struct {
 				Type                   string `json:"@type"`
 				Path                   string `json:"path"`
@@ -30,9 +30,9 @@ type User struct {
 				CanBeDeleted           bool   `json:"can_be_deleted"`
 				IsDownloadingActive    bool   `json:"is_downloading_active"`
 				IsDownloadingCompleted bool   `json:"is_downloading_completed"`
-				DownloadOffset         int    `json:"download_offset"`
-				DownloadedPrefixSize   int    `json:"downloaded_prefix_size"`
-				DownloadedSize         int    `json:"downloaded_size"`
+				DownloadOffset         int64  `json:"download_offset"`
+				DownloadedPrefixSize   int64  `json:"downloaded_prefix_size"`
+				DownloadedSize         int64  `json:"downloaded_size"`
 			} `json:"local"`
 			Remote struct {
 				Type                 string `json:"@type"`
@@ -40,14 +40,14 @@ type User struct {
 				UniqueId             string `json:"unique_id"`
 				IsUploadingActive    bool   `json:"is_uploading_active"`
 				IsUploadingCompleted bool   `json:"is_uploading_completed"`
-				UploadedSize         int    `json:"uploaded_size"`
+				UploadedSize         int64  `json:"uploaded_size"`
 			} `json:"remote"`
 		} `json:"small"`
 		Big struct {
 			Type         string `json:"@type"`
-			Id           int    `json:"id"`
-			Size         int    `json:"size"`
-			ExpectedSize int    `json:"expected_size"`
+			Id           int64  `json:"id"`
+			Size         int64  `json:"size"`
+			ExpectedSize int64  `json:"expected_size"`
 			Local        struct {
 				Type                   string `json:"@type"`
 				Path                   string `json:"path"`
@@ -55,9 +55,9 @@ type User struct {
 				CanBeDeleted           bool   `json:"can_be_deleted"`
 				IsDownloadingActive    bool   `json:"is_downloading_active"`
 				IsDownloadingCompleted bool   `json:"is_downloading_completed"`
-				DownloadOffset         int    `json:"download_offset"`
-				DownloadedPrefixSize   int    `json:"downloaded_prefix_size"`
-				DownloadedSize         int    `json:"downloaded_size"`
+				DownloadOffset         int64  `json:"download_offset"`
+				DownloadedPrefixSize   int64  `json:"downloaded_prefix_size"`
+				DownloadedSize         int64  `json:"downloaded_size"`
 			} `json:"local"`
 			Remote struct {
 				Type                 string `json:"@type"`
@@ -65,13 +65,13 @@ type User struct {
 				UniqueId             string `json:"unique_id"`
 				IsUploadingActive    bool   `json:"is_uploading_active"`
 				IsUploadingCompleted bool   `json:"is_uploading_completed"`
-				UploadedSize         int    `json:"uploaded_size"`
+				UploadedSize         int64  `json:"uploaded_size"`
 			} `json:"remote"`
 		} `json:"big"`
 		Minithumbnail struct {
 			Type   string `json:"@type"`
-			Width  int    `json:"width"`
-			Height int    `json:"height"`
+			Width  int64  `json:"width"`
+			Height int64  `json:"height"`
 			Data   string `json:"data"`
 		} `json:"minithumbnail"`
 		HasAnimation bool `json:"has_animation"`
