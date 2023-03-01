@@ -9,6 +9,7 @@ import "C"
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/aliforever/go-tdlib/config"
 	"github.com/aliforever/go-tdlib/incomingevents"
@@ -214,7 +215,16 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseT
 		return nil, err
 	}
 
-	resp := <-ch
+	ticker := time.NewTicker(time.Second * 5)
+
+	var resp []byte
+
+	select {
+	case <-ticker.C:
+		return nil, errors.New("request_timed_out")
+	case resp = <-ch:
+		break
+	}
 
 	t.responseQueueLocker.Lock()
 	close(ch)
