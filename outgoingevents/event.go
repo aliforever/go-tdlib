@@ -33,10 +33,18 @@ func NewEventJSON(requestID string, data EventInterface) (string, error) {
 }
 
 func NewEventJSONFromMap(requestID string, requestType string, data map[string]interface{}) (string, error) {
-	data["@type"] = requestType
-	data["@extra"] = requestID
+	payload := map[string]interface{}{
+		"@type":  requestType,
+		"@extra": requestID,
+	}
 
-	js, err := json.Marshal(data)
+	if data != nil {
+		for key, val := range data {
+			payload[key] = val
+		}
+	}
+
+	js, err := json.Marshal(payload)
 	if err != nil {
 		return "", err
 	}

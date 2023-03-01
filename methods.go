@@ -90,6 +90,10 @@ func (t *TDLib) AcceptTermsOfService(termsOfServiceID string) error {
 	return err
 }
 
+func (t *TDLib) GetMe() (*entities.User, error) {
+	return send[entities.User](t, outgoingevents.GetMe{})
+}
+
 func (t *TDLib) GetChat(chatID int64) (*incomingevents.GetChatResponse, error) {
 	return send[incomingevents.GetChatResponse](t, outgoingevents.GetChat{
 		ChatID: chatID,
