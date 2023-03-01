@@ -124,12 +124,8 @@ func (t *TDLib) receiveUpdates() error {
 		}
 
 		if ie.RequestID != "" {
-			if ch := t.getResponseQueueByRequestID(ie.RequestID); ch != nil {
-				go func(responseChan chan []byte, event []byte) {
-					responseChan <- event
-				}(ch, updateBytes)
-				continue
-			}
+			go t.informResponse(ie.RequestID, updateBytes)
+			continue
 		}
 
 		event, err := incomingevents.FromBytes(updateBytes)
@@ -149,11 +145,16 @@ func (t *TDLib) receiveUpdates() error {
 			go t.handlers.onUpdateAuthorizationState(event.AuthorizationState.Type)
 		}
 
-		if handler := t.getEventTypeHandler(event.Type); handler != nil {
-			err := handler.Handle(updateBytes)
-			if err != nil {
-				return err
-			}
+		go t.handleEventType(event.Type, updateBytes)
+	}
+}
+
+func (t *TDLib) handleEventType(eventType string, data []byte) {
+	if handler := t.getEventTypeHandler(eventType); handler != nil {
+		err := handler.Handle(data)
+		if err != nil {
+			// TODO: Add Logs
+			return
 		}
 	}
 }
@@ -180,6 +181,32 @@ func (t *TDLib) getResponseQueueByRequestID(requestID string) chan []byte {
 	return nil
 }
 
+func (t *TDLib) newResponseChannel(requestID string) chan []byte {
+	ch := make(chan []byte)
+
+	t.responseQueueLocker.Lock()
+	defer t.responseQueueLocker.Unlock()
+
+	t.responseQueue[requestID] = ch
+
+	return ch
+}
+
+func (t *TDLib) removeResponseChannel(requestID string, ch chan []byte) {
+	t.responseQueueLocker.Lock()
+	defer t.responseQueueLocker.Unlock()
+
+	close(ch)
+	delete(t.responseQueue, requestID)
+}
+
+func (t *TDLib) informResponse(requestID string, data []byte) {
+	ch := t.getResponseQueueByRequestID(requestID)
+	if ch != nil {
+		ch <- data
+	}
+}
+
 func sendMap[ResponseType any](t *TDLib, requestType string, data map[string]interface{}) (*ResponseType, error) {
 	requestID := uuid.NewString()
 
@@ -204,11 +231,7 @@ func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (*Resp
 }
 
 func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseType, error) {
-	ch := make(chan []byte)
-
-	t.responseQueueLocker.Lock()
-	t.responseQueue[requestID] = ch
-	t.responseQueueLocker.Unlock()
+	ch := t.newResponseChannel(requestID)
 
 	err := t.fireStringQuery(str)
 	if err != nil {
@@ -226,10 +249,7 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseT
 		break
 	}
 
-	t.responseQueueLocker.Lock()
-	close(ch)
-	delete(t.responseQueue, requestID)
-	t.responseQueueLocker.Unlock()
+	t.removeResponseChannel(requestID, ch)
 
 	var errEvent incomingevents.ErrorEvent
 	err = json.Unmarshal(resp, &errEvent)
