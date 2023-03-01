@@ -15,6 +15,7 @@ import (
 	"github.com/aliforever/go-tdlib/incomingevents"
 	"github.com/aliforever/go-tdlib/outgoingevents"
 	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
 	"math/rand"
 	"sync"
 	"time"
@@ -33,9 +34,11 @@ type TDLib struct {
 
 	responseQueueLocker sync.Mutex
 	responseQueue       map[string]chan []byte
+
+	logger *logrus.Logger
 }
 
-func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Config) *TDLib {
+func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Config, logger *logrus.Logger) *TDLib {
 	rand.Seed(time.Now().Unix())
 
 	// TODO: Add more fields to config
@@ -85,6 +88,7 @@ func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Conf
 		cfg:           *cfg,
 		handlers:      handlers,
 		responseQueue: map[string]chan []byte{},
+		logger:        logger,
 	}
 }
 
@@ -232,6 +236,10 @@ func send[ResponseType any](t *TDLib, data outgoingevents.EventInterface) (*Resp
 
 func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseType, error) {
 	ch := t.newResponseChannel(requestID)
+
+	if t.logger != nil {
+		t.logger.Debug(str)
+	}
 
 	err := t.fireStringQuery(str)
 	if err != nil {
