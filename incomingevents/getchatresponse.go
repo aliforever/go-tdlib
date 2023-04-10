@@ -171,7 +171,11 @@ type GetChatResponse struct {
 	LastReadOutboxMessageId    int           `json:"last_read_outbox_message_id"`
 	UnreadMentionCount         int           `json:"unread_mention_count"`
 	UnreadReactionCount        int           `json:"unread_reaction_count"`
-	NotificationSettings       struct {
+	ActionBar                  struct {
+		Type         string `json:"@type"`
+		CanUnarchive bool   `json:"can_unarchive"`
+	} `json:"action_bar"`
+	NotificationSettings struct {
 		Type                                        string `json:"@type"`
 		UseDefaultMuteFor                           bool   `json:"use_default_mute_for"`
 		MuteFor                                     int    `json:"mute_for"`
