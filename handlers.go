@@ -11,6 +11,7 @@ type Handlers struct {
 	incomingEvent              func(event incomingevents.Event)
 	onUpdateConnectionState    func(newState entities.ConnectionStateType)
 	onUpdateAuthorizationState func(newState entities.AuthorizationStateType)
+	onError                    func(err incomingevents.ErrorEvent)
 
 	eventTypeHandlerLocker sync.Mutex
 	eventTypeHandlers      map[string]event
@@ -22,6 +23,11 @@ func NewHandlers() *Handlers {
 
 func NewEventHandler[T any](handler func(data *T)) Event[T] {
 	return Event[T]{handler: handler}
+}
+
+func (h *Handlers) SetErrorHandler(fn func(err incomingevents.ErrorEvent)) *Handlers {
+	h.onError = fn
+	return h
 }
 
 func (h *Handlers) SetRawIncomingEventHandler(fn func(eventBytes []byte)) *Handlers {

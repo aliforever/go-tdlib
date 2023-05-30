@@ -127,6 +127,17 @@ func (t *TDLib) receiveUpdates() error {
 			return err
 		}
 
+		if ie.Type == "error" {
+			if t.handlers != nil && t.handlers.onError != nil {
+				errEvent, err := incomingevents.ErrorFromBytes(updateBytes)
+				if err != nil {
+					return err
+				}
+				go t.handlers.onError(errEvent)
+			}
+			continue
+		}
+
 		if ie.RequestID != "" {
 			go t.informResponse(ie.RequestID, updateBytes)
 			continue
@@ -246,7 +257,7 @@ func _send[ResponseType any](t *TDLib, requestID string, str string) (*ResponseT
 		return nil, err
 	}
 
-	ticker := time.NewTicker(time.Second * 5)
+	ticker := time.NewTicker(time.Second * 60)
 
 	var resp []byte
 

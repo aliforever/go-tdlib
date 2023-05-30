@@ -157,3 +157,19 @@ func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64
 		OnlyLocal:     onlyLocal,
 	})
 }
+
+func (t *TDLib) SendMessage(
+	chatID int64,
+	replyToMessageID int64,
+	replyMarkup entities.ReplyMarkup,
+	inputMessageContent entities.InputMessageContent,
+	options *outgoingevents.SendMessageOptions,
+) (*incomingevents.SendMessage, error) {
+	return send[incomingevents.SendMessage](t, outgoingevents.SendMessage{
+		ChatID:              chatID,
+		ReplyToMessageID:    replyToMessageID,
+		Options:             options,
+		ReplyMarkup:         replyMarkup,
+		InputMessageContent: inputMessageContent,
+	})
+}
