@@ -7,8 +7,13 @@ import (
 	"github.com/aliforever/go-tdlib/outgoingevents"
 )
 
-func (t *TDLib) CustomRequest(requestType string, parameters map[string]interface{}) (result *json.RawMessage, err error) {
-	resp, err := sendMap[json.RawMessage](t, requestType, parameters)
+func (t *TDLib) CustomRequest(
+	requestType string,
+	parameters map[string]interface{},
+	options ...*SendOptions,
+) (result *json.RawMessage, err error) {
+
+	resp, err := sendMap[json.RawMessage](t, requestType, parameters, options...)
 	if err != nil {
 		return nil, err
 	}
