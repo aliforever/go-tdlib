@@ -121,7 +121,14 @@ func (t *TDLib) LoadChats(inboxType *entities.ChatList, limit int32) error {
 	return err
 }
 
-func (t *TDLib) DownloadFile(fileID, priority, offset, limit int64, synchronous bool) (*incomingevents.DownloadFileResponse, error) {
+func (t *TDLib) DownloadFile(
+	fileID,
+	priority,
+	offset,
+	limit int64,
+	synchronous bool,
+	options ...*SendOptions,
+) (*incomingevents.DownloadFileResponse, error) {
 	return send[incomingevents.DownloadFileResponse](t, outgoingevents.DownloadFile{
 		FileID:      fileID,
 		Priority:    priority,
