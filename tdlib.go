@@ -127,7 +127,7 @@ func (t *TDLib) receiveUpdates() error {
 			return err
 		}
 
-		if ie.Type == "error" {
+		if ie.Type == "error" && ie.RequestID == "" {
 			if t.handlers != nil && t.handlers.onError != nil {
 				errEvent, err := incomingevents.ErrorFromBytes(updateBytes)
 				if err != nil {
