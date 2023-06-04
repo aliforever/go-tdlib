@@ -135,7 +135,7 @@ func (t *TDLib) DownloadFile(
 		Offset:      offset,
 		Limit:       limit,
 		Synchronous: synchronous,
-	})
+	}, options...)
 }
 
 func (t *TDLib) ReadFilePart(fileID, offset, count int64) (*incomingevents.ReadFilePart, error) {
