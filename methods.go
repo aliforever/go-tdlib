@@ -62,6 +62,14 @@ func (t *TDLib) SetAuthenticationPhoneNumber(phoneNumber string, settings *entit
 	return err
 }
 
+func (t *TDLib) CheckAuthenticationBotToken(token string) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.CheckAuthenticationBotToken{
+		Token: token,
+	})
+
+	return err
+}
+
 func (t *TDLib) CheckAuthenticationCode(code string) error {
 	_, err := send[map[string]interface{}](t, outgoingevents.CheckAuthenticationCode{
 		Code: code,
