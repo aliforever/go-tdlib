@@ -36,11 +36,31 @@ func (c *Client) Start() error {
 	h := tdlib.NewHandlers().
 		SetOnUpdateAuthorizationStateEventHandler(c.onAuthorizationStateChange).
 		SetRawIncomingEventHandler(c.onRawIncomingEvent).
-		SetErrorHandler(c.onError)
+		SetErrorHandler(c.onError).
+		AddOnNewMessageHandler(c.onNewOutgoingMessage, tdlib.NewMessageFilters().SetIsOutgoingTrue())
 
 	c.client = tdlib.NewClient(27625832, "e79990d433dd59de1ac4d06014cb5f32", h, cfg, nil)
 
 	return c.client.ReceiveUpdates()
+}
+
+func (c *Client) onNewOutgoingMessage(message *incomingevents.UpdateNewMessage) {
+	fmt.Println("New Outgoing Message: ", message.Message.Content)
+	// _, err := c.client.SendMessage(
+	// 	message.Message.ChatId,
+	// 	0,
+	// 	nil,
+	// 	entities.NewInputMessageFormattedText(
+	// 		"Outgoing message happened",
+	// 		true,
+	// 		true,
+	// 		nil,
+	// 	),
+	// 	nil,
+	// )
+	// if err != nil {
+	// 	fmt.Printf("Error: %s\n", err.Error())
+	// }
 }
 
 func (c *Client) receiveCodeFromChannel() {
@@ -206,24 +226,6 @@ func (c *Client) receiveInputFromQasedlu(message string) (string, error) {
 
 func (c *Client) onRawIncomingEvent(bytes []byte) {
 	return
-	// write to ./tdlib/updates.txt
-	f, err := os.OpenFile("./tdlib/updates.txt", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
-		return
-	}
-
-	_, err = f.Write(bytes)
-	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
-		return
-	}
-
-	err = f.Close()
-	if err != nil {
-		fmt.Printf("Error: %s\n", err.Error())
-		return
-	}
 }
 
 func (c *Client) onError(errr incomingevents.ErrorEvent) {

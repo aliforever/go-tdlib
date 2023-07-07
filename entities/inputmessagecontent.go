@@ -10,6 +10,20 @@ type InputMessageText struct {
 	ClearDraft            bool           `json:"clear_draft"`
 }
 
+// NewInputMessageFormattedText creates a new InputMessageText
+func NewInputMessageFormattedText(
+	text string,
+	disableWebPagePreview bool,
+	clearDraft bool,
+	entities []*TextEntity,
+) *InputMessageText {
+	return &InputMessageText{
+		Text:                  &FormattedText{Text: text, Entities: entities},
+		DisableWebPagePreview: disableWebPagePreview,
+		ClearDraft:            clearDraft,
+	}
+}
+
 func (s InputMessageText) Type() string {
 	return "inputMessageText"
 }

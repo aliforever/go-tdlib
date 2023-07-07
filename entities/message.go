@@ -1,32 +1,29 @@
 package entities
 
 type Message struct {
-	Type     string `json:"@type"`
-	Id       int64  `json:"id"`
-	SenderId struct {
-		Type   string `json:"@type"`
-		UserId int64  `json:"user_id"`
-	} `json:"sender_id"`
-	ChatId                    int64 `json:"chat_id"`
-	IsOutgoing                bool  `json:"is_outgoing"`
-	IsPinned                  bool  `json:"is_pinned"`
-	CanBeEdited               bool  `json:"can_be_edited"`
-	CanBeForwarded            bool  `json:"can_be_forwarded"`
-	CanBeSaved                bool  `json:"can_be_saved"`
-	CanBeDeletedOnlyForSelf   bool  `json:"can_be_deleted_only_for_self"`
-	CanBeDeletedForAllUsers   bool  `json:"can_be_deleted_for_all_users"`
-	CanGetAddedReactions      bool  `json:"can_get_added_reactions"`
-	CanGetStatistics          bool  `json:"can_get_statistics"`
-	CanGetMessageThread       bool  `json:"can_get_message_thread"`
-	CanGetViewers             bool  `json:"can_get_viewers"`
-	CanGetMediaTimestampLinks bool  `json:"can_get_media_timestamp_links"`
-	CanReportReactions        bool  `json:"can_report_reactions"`
-	HasTimestampedMedia       bool  `json:"has_timestamped_media"`
-	IsChannelPost             bool  `json:"is_channel_post"`
-	IsTopicMessage            bool  `json:"is_topic_message"`
-	ContainsUnreadMention     bool  `json:"contains_unread_mention"`
-	Date                      int64 `json:"date"`
-	EditDate                  int64 `json:"edit_date"`
+	Type                      string   `json:"@type"`
+	Id                        int64    `json:"id"`
+	SenderId                  SenderID `json:"sender_id"`
+	ChatId                    int64    `json:"chat_id"`
+	IsOutgoing                bool     `json:"is_outgoing"`
+	IsPinned                  bool     `json:"is_pinned"`
+	CanBeEdited               bool     `json:"can_be_edited"`
+	CanBeForwarded            bool     `json:"can_be_forwarded"`
+	CanBeSaved                bool     `json:"can_be_saved"`
+	CanBeDeletedOnlyForSelf   bool     `json:"can_be_deleted_only_for_self"`
+	CanBeDeletedForAllUsers   bool     `json:"can_be_deleted_for_all_users"`
+	CanGetAddedReactions      bool     `json:"can_get_added_reactions"`
+	CanGetStatistics          bool     `json:"can_get_statistics"`
+	CanGetMessageThread       bool     `json:"can_get_message_thread"`
+	CanGetViewers             bool     `json:"can_get_viewers"`
+	CanGetMediaTimestampLinks bool     `json:"can_get_media_timestamp_links"`
+	CanReportReactions        bool     `json:"can_report_reactions"`
+	HasTimestampedMedia       bool     `json:"has_timestamped_media"`
+	IsChannelPost             bool     `json:"is_channel_post"`
+	IsTopicMessage            bool     `json:"is_topic_message"`
+	ContainsUnreadMention     bool     `json:"contains_unread_mention"`
+	Date                      int64    `json:"date"`
+	EditDate                  int64    `json:"edit_date"`
 	InteractionInfo           struct {
 		Type         string `json:"@type"`
 		ViewCount    int64  `json:"view_count"`

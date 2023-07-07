@@ -15,14 +15,12 @@ type Handlers struct {
 
 	eventTypeHandlerLocker sync.Mutex
 	eventTypeHandlers      map[string]event
+
+	onNewMessageHandlers []*newMessageHandler
 }
 
 func NewHandlers() *Handlers {
 	return &Handlers{eventTypeHandlers: map[string]event{}}
-}
-
-func NewEventHandler[T any](handler func(data *T)) Event[T] {
-	return Event[T]{handler: handler}
 }
 
 func (h *Handlers) SetErrorHandler(fn func(err incomingevents.ErrorEvent)) *Handlers {
@@ -47,6 +45,27 @@ func (h *Handlers) SetOnUpdateConnectionStateEventHandler(fn func(newState entit
 
 func (h *Handlers) SetOnUpdateAuthorizationStateEventHandler(fn func(newState entities.AuthorizationStateType)) *Handlers {
 	h.onUpdateAuthorizationState = fn
+	return h
+}
+
+func (h *Handlers) AddOnNewMessageHandler(
+	fn func(data *incomingevents.UpdateNewMessage),
+	filters *OnNewMessageFilters,
+) *Handlers {
+	h.eventTypeHandlerLocker.Lock()
+	defer h.eventTypeHandlerLocker.Unlock()
+
+	h.onNewMessageHandlers = append(h.onNewMessageHandlers, newOnNewMessageHandler(fn, filters))
+
+	return h
+}
+
+func (h *Handlers) SetOnFile(fn func(data *incomingevents.UpdateFile)) *Handlers {
+	h.eventTypeHandlerLocker.Lock()
+	defer h.eventTypeHandlerLocker.Unlock()
+
+	h.eventTypeHandlers["updateFile"] = NewEventHandler[incomingevents.UpdateFile](fn)
+
 	return h
 }
 
