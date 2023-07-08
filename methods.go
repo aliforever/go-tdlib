@@ -193,3 +193,13 @@ func (t *TDLib) SendMessage(
 		InputMessageContent: inputMessageContent,
 	})
 }
+
+func (t *TDLib) DeleteMessages(chatID int64, messageIDs []int64, revoke bool) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.DeleteMessages{
+		ChatID:     chatID,
+		MessageIDs: messageIDs,
+		Revoke:     revoke,
+	})
+
+	return err
+}
