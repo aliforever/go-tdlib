@@ -1,5 +1,16 @@
 package entities
 
+const (
+	ContentTypeText      = "messageText"
+	ContentTypeAnimation = "messageAnimation"
+	ContentTypePhoto     = "messagePhoto"
+	ContentTypeDocument  = "messageDocument"
+	ContentTypeVideo     = "messageVideo"
+	ContentTypeVideoNote = "messageVideoNote"
+	ContentTypeVoiceNote = "messageVoiceNote"
+	ContentTypeAudio     = "messageAudio"
+)
+
 type Content struct {
 	Type      string     `json:"@type"`
 	Animation *Animation `json:"animation"`
