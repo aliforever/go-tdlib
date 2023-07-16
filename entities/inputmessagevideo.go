@@ -22,6 +22,7 @@ func (s InputMessageVideo) Type() string {
 
 func (s InputMessageVideo) MarshalJSON() ([]byte, error) {
 	type basicVideo struct {
+		Type              string          `json:"@type"`
 		Thumbnail         *InputThumbnail `json:"thumbnail"`
 		Duration          int64           `json:"duration"`
 		Width             int64           `json:"width"`
@@ -32,6 +33,7 @@ func (s InputMessageVideo) MarshalJSON() ([]byte, error) {
 	}
 
 	b := basicVideo{
+		Type:              s.Type(),
 		Thumbnail:         s.Thumbnail,
 		Duration:          s.Duration,
 		Width:             s.Width,
