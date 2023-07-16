@@ -59,6 +59,22 @@ func (s SendMessage) MarshalJSON() ([]byte, error) {
 				InputMessageText: t,
 			},
 		})
+	case *entities.InputMessageVideo:
+		type InputMessageVideo struct {
+			Type string `json:"@type"`
+			*entities.InputMessageVideo
+		}
+
+		return json.Marshal(&struct {
+			*basicSendMessage
+			InputMessageContent *InputMessageVideo `json:"input_message_content"`
+		}{
+			basicSendMessage: &b,
+			InputMessageContent: &InputMessageVideo{
+				Type:              t.Type(),
+				InputMessageVideo: t,
+			},
+		})
 	default:
 		return nil, fmt.Errorf("invalid type")
 	}

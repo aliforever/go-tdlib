@@ -4,12 +4,6 @@ type InputMessageContent interface {
 	Type() string
 }
 
-type InputMessageText struct {
-	Text                  *FormattedText `json:"text"`
-	DisableWebPagePreview bool           `json:"disable_web_page_preview"`
-	ClearDraft            bool           `json:"clear_draft"`
-}
-
 // NewInputMessageFormattedText creates a new InputMessageText
 func NewInputMessageFormattedText(
 	text string,
@@ -24,6 +18,48 @@ func NewInputMessageFormattedText(
 	}
 }
 
-func (s InputMessageText) Type() string {
-	return "inputMessageText"
+// NewInputMessageVideoFileID creates a new InputMessageVideo
+func NewInputMessageVideoFileID(
+	fileID int64,
+	thumb *InputThumbnail,
+	caption *FormattedText,
+	width int64,
+	height int64,
+	duration int64,
+	supportsStreaming bool,
+	ttl int64,
+) *InputMessageVideo {
+	return &InputMessageVideo{
+		Video:             &InputFileID{fileID},
+		Thumbnail:         thumb,
+		Caption:           caption,
+		Width:             width,
+		Height:            height,
+		Duration:          duration,
+		SupportsStreaming: supportsStreaming,
+		Ttl:               ttl,
+	}
+}
+
+// NewInputMessageVideoRemote creates a new InputMessageVideo
+func NewInputMessageVideoRemote(
+	remoteFileID string,
+	thumb *InputThumbnail,
+	caption *FormattedText,
+	width int64,
+	height int64,
+	duration int64,
+	supportsStreaming bool,
+	ttl int64,
+) *InputMessageVideo {
+	return &InputMessageVideo{
+		Video:             &InputFileRemote{remoteFileID},
+		Thumbnail:         thumb,
+		Caption:           caption,
+		Width:             width,
+		Height:            height,
+		Duration:          duration,
+		SupportsStreaming: supportsStreaming,
+		Ttl:               ttl,
+	}
 }
