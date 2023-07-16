@@ -56,7 +56,8 @@ func (s InputMessageVideo) MarshalJSON() ([]byte, error) {
 		}{
 			basicVideo: &b,
 			Video: &InputVideoFileID{
-				Type: t.Type(),
+				Type:        t.Type(),
+				InputFileID: t,
 			},
 		})
 	case *InputFileRemote:
@@ -71,7 +72,8 @@ func (s InputMessageVideo) MarshalJSON() ([]byte, error) {
 		}{
 			basicVideo: &b,
 			Video: &InputVideoFileRemote{
-				Type: t.Type(),
+				Type:            t.Type(),
+				InputFileRemote: t,
 			},
 		})
 	default:
