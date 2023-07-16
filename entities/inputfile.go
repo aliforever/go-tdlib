@@ -11,3 +11,7 @@ func NewInputFileID(fileID int64) InputFile {
 func NewInputFileRemote(fileID string) InputFile {
 	return &InputFileRemote{fileID}
 }
+
+func NewInputFileLocal(path string) InputFile {
+	return &InputFileLocal{path}
+}
