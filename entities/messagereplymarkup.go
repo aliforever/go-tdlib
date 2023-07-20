@@ -24,18 +24,24 @@ func (m *MessageReplyMarkup) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	*m = MessageReplyMarkup{Type: t.Type}
+	rp := MessageReplyMarkup{Type: t.Type}
 
 	switch t.Type {
 	case "replyMarkupForceReply":
-		err = json.Unmarshal(b, &m.ReplyMarkupForceReply)
+		err = json.Unmarshal(b, &rp.ReplyMarkupForceReply)
 	case "replyMarkupInlineKeyboard":
-		err = json.Unmarshal(b, &m.ReplyMarkupInlineKeyboard)
+		err = json.Unmarshal(b, &rp.ReplyMarkupInlineKeyboard)
 	case "replyMarkupRemoveKeyboard":
-		err = json.Unmarshal(b, &m.ReplyMarkupRemoveKeyboard)
+		err = json.Unmarshal(b, &rp.ReplyMarkupRemoveKeyboard)
 	case "replyMarkupShowKeyboard":
-		err = json.Unmarshal(b, &m.ReplyMarkupShowKeyboard)
+		err = json.Unmarshal(b, &rp.ReplyMarkupShowKeyboard)
 	}
 
-	return err
+	if err != nil {
+		return err
+	}
+
+	*m = rp
+
+	return nil
 }

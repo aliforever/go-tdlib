@@ -1,5 +1,7 @@
 package entities
 
+import "encoding/json"
+
 type ReplyMarkup interface {
 	Type() string
 }
@@ -13,9 +15,52 @@ func (s ReplyMarkupForceReply) Type() string {
 	return "replyMarkupForceReply"
 }
 
+type InlineKeyboardButtonTypeCallback struct {
+	Type string `json:"@type"`
+	Data string `json:"data"`
+}
+
+type InlineKeyboardButtonType struct {
+	Type string `json:"@type"`
+
+	*InlineKeyboardButtonTypeCallback `json:"type"`
+}
+
+// UnmarshalJSON Overrides UnmarshalJSON for InlineKeyboardButton
+func (m *InlineKeyboardButtonType) UnmarshalJSON(b []byte) error {
+	type baseMarkup struct {
+		Type string          `json:"@type"`
+		Data json.RawMessage `json:"type"`
+	}
+
+	var t baseMarkup
+
+	err := json.Unmarshal(b, &t)
+	if err != nil {
+		return err
+	}
+
+	rp := InlineKeyboardButtonType{Type: t.Type}
+
+	switch t.Type {
+	case "inlineKeyboardButtonTypeCallback":
+		err = json.Unmarshal(t.Data, &rp.InlineKeyboardButtonTypeCallback)
+	}
+
+	if err != nil {
+		return err
+	}
+
+	*m = rp
+
+	return nil
+}
+
 type InlineKeyboardButton struct {
-	Text string      `json:"text"`
-	Type interface{} `json:"type"`
+	Type string `json:"@type"`
+	Text string `json:"text"`
+
+	Data *InlineKeyboardButtonTypeCallback `json:"type"`
 }
 
 type ReplyMarkupInlineKeyboard struct {
