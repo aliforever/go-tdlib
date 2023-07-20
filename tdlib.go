@@ -178,7 +178,7 @@ func (t *TDLib) handleEventType(eventType string, data []byte) {
 			handler := t.handlers.onNewMessageHandlers[i]
 
 			if err := NewEventHandlerWithFilter(handler.handler, handler.checkFilters).Handle(data); err != nil {
-				// TODO: Add Logs
+				t.logger.Error(err)
 			}
 		}
 	}
