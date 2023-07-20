@@ -14,8 +14,8 @@ func (s ReplyMarkupForceReply) Type() string {
 }
 
 type InlineKeyboardButton struct {
-	Text string `json:"text"`
-	Type string `json:"type"`
+	Text string      `json:"text"`
+	Type interface{} `json:"type"`
 }
 
 type ReplyMarkupInlineKeyboard struct {
