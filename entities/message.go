@@ -38,15 +38,16 @@ type Message struct {
 		} `json:"reply_info"`
 		Reactions []interface{} `json:"reactions"`
 	} `json:"interaction_info"`
-	UnreadReactions   []interface{} `json:"unread_reactions"`
-	ReplyInChatId     int64         `json:"reply_in_chat_id"`
-	ReplyToMessageId  int64         `json:"reply_to_message_id"`
-	MessageThreadId   int64         `json:"message_thread_id"`
-	Ttl               int64         `json:"ttl"`
-	TtlExpiresIn      float64       `json:"ttl_expires_in"`
-	ViaBotUserId      int64         `json:"via_bot_user_id"`
-	AuthorSignature   string        `json:"author_signature"`
-	MediaAlbumId      string        `json:"media_album_id"`
-	RestrictionReason string        `json:"restriction_reason"`
-	Content           Content       `json:"content"`
+	UnreadReactions   []interface{}       `json:"unread_reactions"`
+	ReplyInChatId     int64               `json:"reply_in_chat_id"`
+	ReplyToMessageId  int64               `json:"reply_to_message_id"`
+	MessageThreadId   int64               `json:"message_thread_id"`
+	Ttl               int64               `json:"ttl"`
+	TtlExpiresIn      float64             `json:"ttl_expires_in"`
+	ViaBotUserId      int64               `json:"via_bot_user_id"`
+	AuthorSignature   string              `json:"author_signature"`
+	MediaAlbumId      string              `json:"media_album_id"`
+	RestrictionReason string              `json:"restriction_reason"`
+	Content           Content             `json:"content"`
+	ReplyMarkup       *MessageReplyMarkup `json:"reply_markup"`
 }
