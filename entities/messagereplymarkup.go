@@ -13,16 +13,18 @@ type MessageReplyMarkup struct {
 
 // UnmarshalJSON Overrides UnmarshalJSON for MessageReplyMarkup
 func (m *MessageReplyMarkup) UnmarshalJSON(b []byte) error {
-	type temp MessageReplyMarkup
+	type baseMarkup struct {
+		Type string `json:"@type"`
+	}
 
-	var t temp
+	var t baseMarkup
 
 	err := json.Unmarshal(b, &t)
 	if err != nil {
 		return err
 	}
 
-	*m = MessageReplyMarkup(t)
+	*m = MessageReplyMarkup{Type: t.Type}
 
 	switch t.Type {
 	case "replyMarkupForceReply":
