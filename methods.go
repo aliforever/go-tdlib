@@ -203,3 +203,51 @@ func (t *TDLib) DeleteMessages(chatID int64, messageIDs []int64, revoke bool) er
 
 	return err
 }
+
+func (t *TDLib) GetInlineQueryResults(
+	botUserID int64,
+	chatID int64,
+	userLocation interface{},
+	query string,
+	offset string,
+) (*entities.InlineQueryResults, error) {
+	return send[entities.InlineQueryResults](t, outgoingevents.GetInlineQueryResults{
+		BotUserID:    botUserID,
+		ChatID:       chatID,
+		UserLocation: userLocation,
+		Query:        query,
+		Offset:       offset,
+	})
+}
+
+func (t *TDLib) SendInlineQueryResultMessage(
+	chatID int64,
+	messageThreadID int64,
+	replyToMessageID int64,
+	options *outgoingevents.SendMessageOptions,
+	queryID int64,
+	resultID string,
+	hideViaBot bool,
+) (*entities.Message, error) {
+	return send[entities.Message](t, outgoingevents.SendInlineQueryResultMessage{
+		ChatID:           chatID,
+		MessageThreadID:  messageThreadID,
+		ReplyToMessageID: replyToMessageID,
+		Options:          options,
+		QueryID:          queryID,
+		ResultID:         resultID,
+		HideViaBot:       hideViaBot,
+	})
+}
+
+func (t *TDLib) GetCallbackQueryAnswer(
+	chatID int64,
+	messageID int64,
+	payload *entities.CallbackQueryPayload,
+) (*entities.CallbackQueryAnswer, error) {
+	return send[entities.CallbackQueryAnswer](t, outgoingevents.GetCallbackQueryAnswer{
+		ChatID:    chatID,
+		MessageID: messageID,
+		Payload:   payload,
+	})
+}
