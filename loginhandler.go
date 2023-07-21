@@ -25,6 +25,7 @@ type UserAuthorizationHandler struct {
 func NewUserAuthorizationHandler(
 	phoneNumber,
 	password string,
+	onCode func() string,
 	onSuccess func(),
 	onError func(stateType entities.AuthorizationStateType, err error),
 ) *UserAuthorizationHandler {
@@ -32,6 +33,7 @@ func NewUserAuthorizationHandler(
 	return &UserAuthorizationHandler{
 		PhoneNumber: phoneNumber,
 		Password:    password,
+		onCode:      onCode,
 		onSuccess:   onSuccess,
 		onError:     onError,
 	}
