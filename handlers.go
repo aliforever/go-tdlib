@@ -7,11 +7,13 @@ import (
 )
 
 type Handlers struct {
-	rawIncomingEvent           func(event []byte)
-	incomingEvent              func(event incomingevents.Event)
-	onUpdateConnectionState    func(newState entities.ConnectionStateType)
-	onUpdateAuthorizationState func(newState entities.AuthorizationStateType)
-	onError                    func(err incomingevents.ErrorEvent)
+	rawIncomingEvent                  func(event []byte)
+	incomingEvent                     func(event incomingevents.Event)
+	onUpdateConnectionState           func(newState entities.ConnectionStateType)
+	authorizationHandler              AuthorizationHandler
+	onUpdateAuthorizationState        func(newState entities.AuthorizationStateType)
+	onUpdateAuthorizationStateHandler func(entities.AuthorizationStateType, func(entities.AuthorizationStateType))
+	onError                           func(err incomingevents.ErrorEvent)
 
 	eventTypeHandlerLocker sync.Mutex
 	eventTypeHandlers      map[string]event
@@ -21,6 +23,11 @@ type Handlers struct {
 
 func NewHandlers() *Handlers {
 	return &Handlers{eventTypeHandlers: map[string]event{}}
+}
+
+func (h *Handlers) SetAuthorizationHandler(handler AuthorizationHandler) *Handlers {
+	h.authorizationHandler = handler
+	return h
 }
 
 func (h *Handlers) SetErrorHandler(fn func(err incomingevents.ErrorEvent)) *Handlers {

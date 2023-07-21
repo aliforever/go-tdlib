@@ -156,6 +156,10 @@ func (t *TDLib) receiveUpdates() error {
 			go t.handlers.onUpdateConnectionState(event.State.Type)
 		}
 
+		if t.handlers.authorizationHandler != nil && isAuthorizationEvent(event) {
+			go t.handlers.authorizationHandler.Process(t, event.AuthorizationState.Type)
+		}
+
 		if t.handlers.onUpdateAuthorizationState != nil && event.Type == "updateAuthorizationState" && event.AuthorizationState != nil {
 			go t.handlers.onUpdateAuthorizationState(event.AuthorizationState.Type)
 		}
