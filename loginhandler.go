@@ -17,7 +17,7 @@ func isAuthorizationEvent(event incomingevents.Event) bool {
 type UserAuthorizationHandler struct {
 	PhoneNumber string
 	Password    string
-	onCode      func() string
+	onCode      func() (string, error)
 	onSuccess   func()
 	onError     func(stateType entities.AuthorizationStateType, err error)
 }
@@ -25,7 +25,7 @@ type UserAuthorizationHandler struct {
 func NewUserAuthorizationHandler(
 	phoneNumber,
 	password string,
-	onCode func() string,
+	onCode func() (string, error),
 	onSuccess func(),
 	onError func(stateType entities.AuthorizationStateType, err error),
 ) *UserAuthorizationHandler {
@@ -50,7 +50,13 @@ func (ulh UserAuthorizationHandler) Process(client *TDLib, update entities.Autho
 			ulh.onError(update, err)
 		}
 	case entities.AuthorizationStateTypeAwaitingCode:
-		if err := client.CheckAuthenticationCode(ulh.onCode()); err != nil && ulh.onError != nil {
+		code, err := ulh.onCode()
+		if err != nil && ulh.onError != nil {
+			ulh.onError(update, err)
+			return
+		}
+
+		if err := client.CheckAuthenticationCode(code); err != nil && ulh.onError != nil {
 			ulh.onError(update, err)
 		}
 	case entities.AuthorizationStateTypeAwaitingPassword:
