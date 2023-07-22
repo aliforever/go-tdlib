@@ -186,6 +186,16 @@ func (t *TDLib) handleEventType(eventType string, data []byte) {
 			}
 		}
 	}
+
+	if eventType == "UpdateMessageEdited" {
+		for i := range t.handlers.onMessageEditedHandlers {
+			handler := t.handlers.onMessageEditedHandlers[i]
+
+			if err := NewEventHandler[incomingevents.UpdateMessageEdited](handler).Handle(data); err != nil {
+				t.logger.Error(err)
+			}
+		}
+	}
 }
 
 func (t *TDLib) getEventTypeHandler(eventType string) event {
