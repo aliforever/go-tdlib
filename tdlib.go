@@ -187,7 +187,7 @@ func (t *TDLib) handleEventType(eventType string, data []byte) {
 		}
 	}
 
-	if eventType == "UpdateMessageEdited" {
+	if eventType == "updateMessageEdited" {
 		for i := range t.handlers.onMessageEditedHandlers {
 			handler := t.handlers.onMessageEditedHandlers[i]
 
