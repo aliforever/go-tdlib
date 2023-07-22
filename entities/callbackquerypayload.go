@@ -1,11 +1,11 @@
 package entities
 
 type CallbackQueryPayloadData struct {
-	Data []byte `json:"data"`
+	Data string `json:"data"`
 }
 
 // NewCallbackQueryPayloadData creates a new CallbackQueryPayloadData.
-func NewCallbackQueryPayloadData(data []byte) *CallbackQueryPayload {
+func NewCallbackQueryPayloadData(data string) *CallbackQueryPayload {
 	return &CallbackQueryPayload{
 		Type: "callbackQueryPayloadData",
 		CallbackQueryPayloadData: &CallbackQueryPayloadData{
