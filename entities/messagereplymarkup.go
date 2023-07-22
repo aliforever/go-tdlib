@@ -5,10 +5,10 @@ import "encoding/json"
 type MessageReplyMarkup struct {
 	Type string `json:"@type"`
 
-	*ReplyMarkupForceReply
-	*ReplyMarkupInlineKeyboard
-	*ReplyMarkupRemoveKeyboard
-	*ReplyMarkupShowKeyboard
+	ForceReply     *ReplyMarkupForceReply     `json:"force_reply"`
+	InlineKeyboard *ReplyMarkupInlineKeyboard `json:"inline_keyboard"`
+	RemoveKeyboard *ReplyMarkupRemoveKeyboard `json:"remove_keyboard"`
+	ShowKeyboard   *ReplyMarkupShowKeyboard   `json:"show_keyboard"`
 }
 
 // UnmarshalJSON Overrides UnmarshalJSON for MessageReplyMarkup
@@ -28,13 +28,13 @@ func (m *MessageReplyMarkup) UnmarshalJSON(b []byte) error {
 
 	switch t.Type {
 	case "replyMarkupForceReply":
-		err = json.Unmarshal(b, &rp.ReplyMarkupForceReply)
+		err = json.Unmarshal(b, &rp.ForceReply)
 	case "replyMarkupInlineKeyboard":
-		err = json.Unmarshal(b, &rp.ReplyMarkupInlineKeyboard)
+		err = json.Unmarshal(b, &rp.InlineKeyboard)
 	case "replyMarkupRemoveKeyboard":
-		err = json.Unmarshal(b, &rp.ReplyMarkupRemoveKeyboard)
+		err = json.Unmarshal(b, &rp.RemoveKeyboard)
 	case "replyMarkupShowKeyboard":
-		err = json.Unmarshal(b, &rp.ReplyMarkupShowKeyboard)
+		err = json.Unmarshal(b, &rp.ShowKeyboard)
 	}
 
 	if err != nil {
