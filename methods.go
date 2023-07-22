@@ -161,8 +161,8 @@ func (t *TDLib) GetRemoteFile(remoteFileID string, fileType *entities.FileType) 
 	})
 }
 
-func (t *TDLib) GetMessage(chatID, messageID int64) (*incomingevents.GetMessageResponse, error) {
-	return send[incomingevents.GetMessageResponse](t, outgoingevents.GetMessage{
+func (t *TDLib) GetMessage(chatID, messageID int64) (*entities.Message, error) {
+	return send[entities.Message](t, outgoingevents.GetMessage{
 		ChatID:    chatID,
 		MessageID: messageID,
 	})
