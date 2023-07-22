@@ -18,8 +18,9 @@ type Handlers struct {
 	eventTypeHandlerLocker sync.Mutex
 	eventTypeHandlers      map[string]event
 
-	onNewMessageHandlers    []*newMessageHandler
-	onMessageEditedHandlers []func(data *incomingevents.UpdateMessageEdited)
+	onNewMessageHandlers     []*newMessageHandler
+	onMessageEditedHandlers  []func(data *incomingevents.UpdateMessageEdited)
+	onMessageContentHandlers []func(data *incomingevents.UpdateMessageContent)
 }
 
 func NewHandlers() *Handlers {
@@ -75,6 +76,17 @@ func (h *Handlers) AddOnUpdateMessageEditedHandler(
 	defer h.eventTypeHandlerLocker.Unlock()
 
 	h.onMessageEditedHandlers = append(h.onMessageEditedHandlers, fn)
+
+	return h
+}
+
+func (h *Handlers) AddOnUpdateMessageContentHandler(
+	fn func(data *incomingevents.UpdateMessageContent),
+) *Handlers {
+	h.eventTypeHandlerLocker.Lock()
+	defer h.eventTypeHandlerLocker.Unlock()
+
+	h.onMessageContentHandlers = append(h.onMessageContentHandlers, fn)
 
 	return h
 }

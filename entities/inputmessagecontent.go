@@ -9,7 +9,7 @@ func NewInputMessageFormattedText(
 	text string,
 	disableWebPagePreview bool,
 	clearDraft bool,
-	entities []*TextEntity,
+	entities []TextEntity,
 ) *InputMessageText {
 	return &InputMessageText{
 		Text:                  &FormattedText{Text: text, Entities: entities},
