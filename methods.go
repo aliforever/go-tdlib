@@ -225,7 +225,7 @@ func (t *TDLib) SendInlineQueryResultMessage(
 	messageThreadID int64,
 	replyToMessageID int64,
 	options *outgoingevents.SendMessageOptions,
-	queryID int64,
+	queryID string,
 	resultID string,
 	hideViaBot bool,
 ) (*entities.Message, error) {

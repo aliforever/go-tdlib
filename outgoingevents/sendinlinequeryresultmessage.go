@@ -5,7 +5,7 @@ type SendInlineQueryResultMessage struct {
 	MessageThreadID  int64               `json:"message_thread_id"`
 	ReplyToMessageID int64               `json:"reply_to_message_id"`
 	Options          *SendMessageOptions `json:"options,omitempty"`
-	QueryID          int64               `json:"query_id"`
+	QueryID          string              `json:"query_id"`
 	ResultID         string              `json:"result_id"`
 	HideViaBot       bool                `json:"hide_via_bot"`
 }
