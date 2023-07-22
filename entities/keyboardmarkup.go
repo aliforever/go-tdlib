@@ -23,7 +23,7 @@ type InlineKeyboardButtonTypeCallback struct {
 type InlineKeyboardButtonType struct {
 	Type string `json:"@type"`
 
-	*InlineKeyboardButtonTypeCallback `json:"type"`
+	Callback *InlineKeyboardButtonTypeCallback `json:"callback"`
 }
 
 // UnmarshalJSON Overrides UnmarshalJSON for InlineKeyboardButton
@@ -44,7 +44,7 @@ func (m *InlineKeyboardButtonType) UnmarshalJSON(b []byte) error {
 
 	switch t.Type {
 	case "inlineKeyboardButtonTypeCallback":
-		err = json.Unmarshal(t.Data, &rp.InlineKeyboardButtonTypeCallback)
+		err = json.Unmarshal(t.Data, &rp.Callback)
 	}
 
 	if err != nil {
