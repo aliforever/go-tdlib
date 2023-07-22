@@ -20,14 +20,17 @@ type InlineKeyboardButtonTypeCallback struct {
 	Data string `json:"data"`
 }
 
-type InlineKeyboardButtonType struct {
+type InlineKeyboardButton struct {
 	Type string `json:"@type"`
+	Text string `json:"text"`
 
 	Callback *InlineKeyboardButtonTypeCallback `json:"callback"`
+
+	Unknown interface{} `json:"unknown"`
 }
 
 // UnmarshalJSON Overrides UnmarshalJSON for InlineKeyboardButton
-func (m *InlineKeyboardButtonType) UnmarshalJSON(b []byte) error {
+func (m *InlineKeyboardButton) UnmarshalJSON(b []byte) error {
 	type baseMarkup struct {
 		Type string          `json:"@type"`
 		Data json.RawMessage `json:"type"`
@@ -40,11 +43,13 @@ func (m *InlineKeyboardButtonType) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
-	rp := InlineKeyboardButtonType{Type: t.Type}
+	rp := InlineKeyboardButton{Type: t.Type}
 
 	switch t.Type {
 	case "inlineKeyboardButtonTypeCallback":
 		err = json.Unmarshal(t.Data, &rp.Callback)
+	default:
+		rp.Unknown = t.Data
 	}
 
 	if err != nil {
@@ -54,13 +59,6 @@ func (m *InlineKeyboardButtonType) UnmarshalJSON(b []byte) error {
 	*m = rp
 
 	return nil
-}
-
-type InlineKeyboardButton struct {
-	Type string `json:"@type"`
-	Text string `json:"text"`
-
-	Data *InlineKeyboardButtonTypeCallback `json:"type"`
 }
 
 type ReplyMarkupInlineKeyboard struct {
