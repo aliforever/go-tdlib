@@ -31,21 +31,31 @@ type InlineKeyboardButton struct {
 
 // UnmarshalJSON Overrides UnmarshalJSON for InlineKeyboardButton
 func (m *InlineKeyboardButton) UnmarshalJSON(b []byte) error {
+	type baseData struct {
+		Type string `json:"@type"`
+	}
+
 	type baseMarkup struct {
 		Type string          `json:"@type"`
 		Data json.RawMessage `json:"type"`
 	}
 
 	var t baseMarkup
+	var bData baseData
 
 	err := json.Unmarshal(b, &t)
 	if err != nil {
 		return err
 	}
 
+	err = json.Unmarshal(t.Data, &bData)
+	if err != nil {
+		return err
+	}
+
 	rp := InlineKeyboardButton{Type: t.Type}
 
-	switch t.Type {
+	switch bData.Type {
 	case "inlineKeyboardButtonTypeCallback":
 		err = json.Unmarshal(t.Data, &rp.Callback)
 	default:
