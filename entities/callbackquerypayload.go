@@ -5,11 +5,11 @@ type CallbackQueryPayloadData struct {
 }
 
 // NewCallbackQueryPayloadData creates a new CallbackQueryPayloadData.
-func NewCallbackQueryPayloadData(data string) *CallbackQueryPayload {
+func NewCallbackQueryPayloadData(data []byte) *CallbackQueryPayload {
 	return &CallbackQueryPayload{
 		Type: "callbackQueryPayloadData",
 		CallbackQueryPayloadData: &CallbackQueryPayloadData{
-			Data: []byte(data),
+			Data: data,
 		},
 	}
 }
