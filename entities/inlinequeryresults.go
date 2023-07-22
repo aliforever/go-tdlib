@@ -112,7 +112,7 @@ func (i *InlineQueryResult) UnmarshalJSON(data []byte) error {
 }
 
 type InlineQueryResults struct {
-	InlineQueryID     int64               `json:"inline_query_id"`
+	InlineQueryID     string              `json:"inline_query_id"`
 	NextOffset        string              `json:"next_offset"`
 	Results           []InlineQueryResult `json:"results"`
 	SwitchPMText      string              `json:"switch_pm_text"`
