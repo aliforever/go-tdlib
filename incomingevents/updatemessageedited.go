@@ -2,6 +2,7 @@ package incomingevents
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/aliforever/go-tdlib/entities"
 )
 
@@ -22,14 +23,19 @@ func (updateMessageEdited *UpdateMessageEdited) UnmarshalJSON(b []byte) error {
 		ChatID      int64           `json:"chat_id"`
 		MessageID   int64           `json:"message_id"`
 		EditDate    int64           `json:"edit_date"`
-		ReplyMarkup json.RawMessage `json:"reply_markup"`
+		ReplyMarkup json.RawMessage `json:"reply_markup,omitempty"`
 	}
 
 	var tmp tmpStruct
 
 	err := json.Unmarshal(b, &tmp)
 	if err != nil {
-		return err
+		return fmt.Errorf(
+			"error while unmarshaling UpdateMessageEdited: %s : %s : %s",
+			err,
+			string(b),
+			string(tmp.ReplyMarkup),
+		)
 	}
 
 	updateMessageEdited.ChatID = tmp.ChatID
@@ -44,7 +50,12 @@ func (updateMessageEdited *UpdateMessageEdited) UnmarshalJSON(b []byte) error {
 
 	err = json.Unmarshal(tmp.ReplyMarkup, &base)
 	if err != nil {
-		return err
+		return fmt.Errorf(
+			"error while unmarshaling UpdateMessageEdited: %s : %s : %s",
+			err,
+			string(b),
+			string(tmp.ReplyMarkup),
+		)
 	}
 
 	switch base.Type {
