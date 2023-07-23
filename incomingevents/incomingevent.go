@@ -2,6 +2,7 @@ package incomingevents
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/aliforever/go-tdlib/entities"
 )
 
@@ -34,7 +35,7 @@ func FromBytes(b []byte) (Event, error) {
 	var event Event
 	err := json.Unmarshal(b, &event)
 	if err != nil {
-		return Event{}, err
+		return Event{}, fmt.Errorf("error unmarshaling event data: %s : %s", string(b), err)
 	}
 
 	event.Raw = b
@@ -46,7 +47,7 @@ func GenericFromBytes(b []byte) (Generic, error) {
 	var event Generic
 	err := json.Unmarshal(b, &event)
 	if err != nil {
-		return Generic{}, err
+		return Generic{}, fmt.Errorf("error unmarshaling event data: %s : %s", string(b), err)
 	}
 
 	return event, err
@@ -57,7 +58,7 @@ func ErrorFromBytes(b []byte) (ErrorEvent, error) {
 
 	err := json.Unmarshal(b, &event)
 	if err != nil {
-		return ErrorEvent{}, err
+		return ErrorEvent{}, fmt.Errorf("error unmarshaling event data: %s : %s", string(b), err)
 	}
 
 	return event, err

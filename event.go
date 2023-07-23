@@ -1,6 +1,9 @@
 package tdlib
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type event interface {
 	Handle(message json.RawMessage) error
@@ -27,7 +30,7 @@ func (e Event[T]) Handle(data json.RawMessage) error {
 	if _, ok := any(t).(*Empty); !ok {
 		err := json.Unmarshal(data, &t)
 		if err != nil {
-			return err
+			return fmt.Errorf("error unmarshaling event data: %s : %s", string(data), err)
 		}
 	}
 
