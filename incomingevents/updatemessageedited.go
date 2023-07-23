@@ -32,6 +32,14 @@ func (updateMessageEdited *UpdateMessageEdited) UnmarshalJSON(b []byte) error {
 		return err
 	}
 
+	updateMessageEdited.ChatID = tmp.ChatID
+	updateMessageEdited.MessageID = tmp.MessageID
+	updateMessageEdited.EditDate = tmp.EditDate
+
+	if tmp.ReplyMarkup == nil || len(tmp.ReplyMarkup) == 0 {
+		return nil
+	}
+
 	var base baseKeyboard
 
 	err = json.Unmarshal(tmp.ReplyMarkup, &base)
@@ -69,10 +77,6 @@ func (updateMessageEdited *UpdateMessageEdited) UnmarshalJSON(b []byte) error {
 		}
 		updateMessageEdited.ReplyMarkup = &replyMarkupShowKeyboard
 	}
-
-	updateMessageEdited.ChatID = tmp.ChatID
-	updateMessageEdited.MessageID = tmp.MessageID
-	updateMessageEdited.EditDate = tmp.EditDate
 
 	return nil
 }

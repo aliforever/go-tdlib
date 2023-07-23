@@ -41,11 +41,18 @@ func (m *InlineKeyboardButton) UnmarshalJSON(b []byte) error {
 	}
 
 	var t baseMarkup
+
 	var bData baseData
 
 	err := json.Unmarshal(b, &t)
 	if err != nil {
 		return err
+	}
+
+	m.Type = t.Type
+
+	if t.Data == nil || len(t.Data) == 0 {
+		return nil
 	}
 
 	err = json.Unmarshal(t.Data, &bData)
