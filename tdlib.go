@@ -17,6 +17,7 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"math/rand"
+	"runtime"
 	"sync"
 	"time"
 	"unsafe"
@@ -107,7 +108,20 @@ func (t *TDLib) fireStringQuery(data string) error {
 }
 
 func (t *TDLib) receiveNextUpdate(timeout int64) []byte {
-	return []byte(C.GoString(C.td_json_client_receive(t.client, C.double(timeout))))
+	defer func() {
+		if r := recover(); r != nil {
+			debugStack := []byte{}
+
+			runtime.Stack(debugStack, false)
+
+			t.logger.Errorf("Recovered in receiveNextUpdate: %v\nStacktrace from panic: %s", r, string(debugStack))
+		}
+	}()
+	update := C.td_json_client_receive(t.client, C.double(timeout))
+
+	updateStr := C.GoString(update)
+
+	return []byte(updateStr)
 }
 
 func (t *TDLib) receiveUpdates() error {
