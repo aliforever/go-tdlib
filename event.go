@@ -30,7 +30,7 @@ func (e Event[T]) Handle(data json.RawMessage) error {
 	if _, ok := any(t).(*Empty); !ok {
 		err := json.Unmarshal(data, &t)
 		if err != nil {
-			return fmt.Errorf("error unmarshaling event data: %s : %s", string(data), err)
+			return fmt.Errorf("error unmarshaling event data in custom event: %s : %s", string(data), err)
 		}
 	}
 
