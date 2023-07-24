@@ -1,7 +1,6 @@
 package config
 
 type Config struct {
-	LogPath               string      `json:"log_path"`
 	UseTestDC             bool        `json:"use_test_dc"`
 	DatabaseDirectory     string      `json:"database_directory"`
 	FilesDirectory        string      `json:"files_directory"`
@@ -20,12 +19,6 @@ type Config struct {
 
 func New() *Config {
 	return &Config{}
-}
-
-func (c *Config) SetLogPath(path string) *Config {
-	c.LogPath = path
-
-	return c
 }
 
 func (c *Config) EnableTestDC() *Config {

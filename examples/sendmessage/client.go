@@ -28,7 +28,6 @@ func NewClient(title string) *Client {
 // Start starts the client
 func (c *Client) Start() error {
 	cfg := config.New().
-		SetLogPath("./tdlib/logs.txt").
 		SetFilesDirectory("./tdlib/tdlib-files").
 		SetDatabaseDirectory("./tdlib/tdlib-db").
 		IgnoreFileNames()
@@ -39,7 +38,9 @@ func (c *Client) Start() error {
 		SetErrorHandler(c.onError).
 		AddOnNewMessageHandler(c.onNewOutgoingMessage, tdlib.NewMessageFilters().SetIsOutgoingTrue())
 
-	c.client = tdlib.NewClient(27625832, "e79990d433dd59de1ac4d06014cb5f32", h, cfg, nil)
+	manager := tdlib.NewManager(nil, nil)
+
+	c.client = manager.NewClient(1, "e", h, cfg, nil)
 
 	return c.client.ReceiveUpdates()
 }

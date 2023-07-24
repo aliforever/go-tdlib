@@ -3,8 +3,7 @@ package tdlib
 // #cgo linux CFLAGS: -I/usr/local/include
 // #cgo linux LDFLAGS: -Wl,-rpath=/usr/local/lib -ltdjson
 // #include <stdlib.h>
-// #include <td/telegram/td_json_client.h>
-// #include <td/telegram/td_log.h>
+// #include "callbacks.h"
 import "C"
 
 import (
@@ -17,19 +16,19 @@ import (
 	"github.com/google/uuid"
 	"github.com/sirupsen/logrus"
 	"math/rand"
-	"runtime"
 	"sync"
 	"time"
-	"unsafe"
 )
 
 type TDLib struct {
-	apiID   int64
-	apiHash string
+	clientID int
 
-	client unsafe.Pointer
+	updatesChan chan []byte
 
 	cfg config.Config
+
+	apiID   int64
+	apiHash string
 
 	handlers *Handlers
 
@@ -39,10 +38,17 @@ type TDLib struct {
 	logger *logrus.Logger
 }
 
-func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Config, logger *logrus.Logger) *TDLib {
+func newClientV2(
+	clientID int,
+	updateChannel chan []byte,
+	apiID int64,
+	apiHash string,
+	handlers *Handlers,
+	cfg *config.Config,
+	logger *logrus.Logger,
+) *TDLib {
 	rand.Seed(time.Now().Unix())
 
-	// TODO: Add more fields to config
 	if cfg == nil {
 		cfg = &config.Config{
 			UseFileDatabase:     true,
@@ -67,27 +73,13 @@ func NewClient(apiID int64, apiHash string, handlers *Handlers, cfg *config.Conf
 		cfg.ApplicationVersion = "1.0.0"
 	}
 
-	if cfg.LogPath != "" {
-		cfgBytes, _ := json.Marshal(map[string]interface{}{
-			"@type": "setLogStream",
-			"log_stream": map[string]interface{}{
-				"@type":         "logStreamFile",
-				"path":          cfg.LogPath,
-				"max_file_size": 10485760,
-			},
-		})
-
-		query := C.CString(string(cfgBytes))
-		C.td_json_client_execute(nil, query)
-		C.free(unsafe.Pointer(query))
-	}
-
 	return &TDLib{
+		clientID:      clientID,
+		updatesChan:   updateChannel,
 		apiID:         apiID,
 		apiHash:       apiHash,
-		client:        C.td_json_client_create(),
-		cfg:           *cfg,
 		handlers:      handlers,
+		cfg:           *cfg,
 		responseQueue: map[string]chan []byte{},
 		logger:        logger,
 	}
@@ -98,36 +90,16 @@ func (t *TDLib) ReceiveUpdates() error {
 }
 
 func (t *TDLib) fireStringQuery(data string) error {
-	query := C.CString(data)
-
-	defer C.free(unsafe.Pointer(query))
-
-	C.td_json_client_send(t.client, query)
+	C.td_send(C.int(t.clientID), C.CString(data))
 
 	return nil
 }
 
-func (t *TDLib) receiveNextUpdate(timeout int64) []byte {
-	defer func() {
-		if r := recover(); r != nil {
-			debugStack := []byte{}
-
-			runtime.Stack(debugStack, false)
-
-			t.logger.Errorf("Recovered in receiveNextUpdate: %v\nStacktrace from panic: %s", r, string(debugStack))
-		}
-	}()
-	update := C.td_json_client_receive(t.client, C.double(timeout))
-
-	updateStr := C.GoString(update)
-
-	return []byte(updateStr)
-}
-
 func (t *TDLib) receiveUpdates() error {
-	for {
-		updateBytes := t.receiveNextUpdate(10)
+	// This is to make sure that the client is ready to receive updates
+	go t.GetAuthorizationState()
 
+	for updateBytes := range t.updatesChan {
 		if updateBytes == nil || len(updateBytes) == 0 {
 			continue
 		}
@@ -180,6 +152,8 @@ func (t *TDLib) receiveUpdates() error {
 
 		go t.handleEventType(event.Type, updateBytes)
 	}
+
+	return nil
 }
 
 func (t *TDLib) handleEventType(eventType string, data []byte) {
