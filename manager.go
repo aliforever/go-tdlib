@@ -118,6 +118,8 @@ func (m *Manager) receiveUpdates() {
 		if clientID != nil {
 			if clientChan, ok := m.getClientChannel(*clientID); ok {
 				go m.writeClientEvent(clientChan, updateBytes)
+
+				continue
 			} else {
 				// TODO: Log Received Update For Unknown Client
 				fmt.Printf("Received update for unknown client: %d\n", *clientID)
