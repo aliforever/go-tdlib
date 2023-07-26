@@ -251,3 +251,19 @@ func (t *TDLib) GetCallbackQueryAnswer(
 		Payload:   payload,
 	})
 }
+
+func (t *TDLib) OpenChat(chatID int64) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.OpenChat{
+		ChatID: chatID,
+	})
+
+	return err
+}
+
+func (t *TDLib) CloseChat(chatID int64) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.CloseChat{
+		ChatID: chatID,
+	})
+
+	return err
+}
