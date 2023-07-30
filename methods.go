@@ -279,3 +279,12 @@ func (t *TDLib) GetGroupCall(groupCallID int64) (*entities.GroupCall, error) {
 		GroupCallID: groupCallID,
 	})
 }
+
+func (t *TDLib) LoadGroupCallParticipants(groupCallID int64, limit int64) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.LoadGroupCallParticipants{
+		GroupCallID: groupCallID,
+		Limit:       limit,
+	})
+
+	return err
+}
