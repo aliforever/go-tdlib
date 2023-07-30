@@ -273,3 +273,9 @@ func (t *TDLib) GetVideoChatAvailableParticipants(chatID int64) (*entities.Messa
 		ChatID: chatID,
 	})
 }
+
+func (t *TDLib) GetGroupCall(groupCallID int64) (*entities.GroupCall, error) {
+	return send[entities.GroupCall](t, outgoingevents.GetGroupCall{
+		GroupCallID: groupCallID,
+	})
+}
