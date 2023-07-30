@@ -1,6 +1,6 @@
 package entities
 
 type RecentSpeaker struct {
-	UserID int64  `json:"user_id"`
-	Source string `json:"source"`
+	ParticipantID *MessageSender `json:"participant_id"`
+	IsSpeaking    bool           `json:"is_speaking"`
 }
