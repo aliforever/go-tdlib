@@ -267,3 +267,9 @@ func (t *TDLib) CloseChat(chatID int64) error {
 
 	return err
 }
+
+func (t *TDLib) GetVideoChatAvailableParticipants(chatID int64) (*entities.MessageSenders, error) {
+	return send[entities.MessageSenders](t, outgoingevents.GetVideoChatAvailableParticipants{
+		ChatID: chatID,
+	})
+}
