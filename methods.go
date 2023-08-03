@@ -288,3 +288,23 @@ func (t *TDLib) LoadGroupCallParticipants(groupCallID int64, limit int64) error 
 
 	return err
 }
+
+func (t *TDLib) JoinGroupCall(
+	groupCallID int64,
+	payload string,
+	joinAs *entities.MessageSender, //  pass null to join as self
+	audioSourceID int64,
+	isMuted bool,
+	isMyVideo bool,
+	inviteHash string,
+) (*string, error) {
+	return send[string](t, outgoingevents.JoinGroupCall{
+		GroupCallID:   groupCallID,
+		ParticipantID: joinAs,
+		AudioSourceID: audioSourceID,
+		Payload:       payload,
+		IsMuted:       isMuted,
+		IsMyVideo:     isMyVideo,
+		InviteHash:    inviteHash,
+	})
+}
