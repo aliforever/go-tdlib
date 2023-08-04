@@ -274,10 +274,6 @@ func send[ResponseType any](
 		return nil, err
 	}
 
-	if t.cfg.LogSentRequests {
-		t.logger.Debug(eventJS)
-	}
-
 	return _send[ResponseType](t, requestID, eventJS, sendOptions...)
 }
 
@@ -289,7 +285,7 @@ func _send[ResponseType any](
 ) (*ResponseType, error) {
 	ch := t.newResponseChannel(requestID)
 
-	if t.logger != nil {
+	if t.cfg.LogSentRequests {
 		t.logger.Debug(str)
 	}
 
