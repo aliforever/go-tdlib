@@ -297,8 +297,8 @@ func (t *TDLib) JoinGroupCall(
 	isMuted bool,
 	isMyVideo bool,
 	inviteHash string,
-) (*string, error) {
-	return send[string](t, outgoingevents.JoinGroupCall{
+) (*entities.RawText, error) {
+	return send[entities.RawText](t, outgoingevents.JoinGroupCall{
 		GroupCallID:   groupCallID,
 		ParticipantID: joinAs,
 		AudioSourceID: audioSourceID,
