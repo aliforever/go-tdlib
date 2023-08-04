@@ -274,6 +274,10 @@ func send[ResponseType any](
 		return nil, err
 	}
 
+	if t.cfg.LogSentRequests {
+		t.logger.Debug(eventJS)
+	}
+
 	return _send[ResponseType](t, requestID, eventJS, sendOptions...)
 }
 

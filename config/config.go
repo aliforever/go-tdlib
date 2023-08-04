@@ -15,6 +15,7 @@ type Config struct {
 	ApplicationVersion    string      `json:"application_version"`
 	StorageOptimizer      bool        `json:"enable_storage_optimizer"`
 	FilenamesIgnored      bool        `json:"ignore_file_names"`
+	LogSentRequests       bool        `json:"log_sent_requests"`
 }
 
 func New() *Config {
@@ -101,6 +102,12 @@ func (c *Config) EnableStorageOptimizer() *Config {
 
 func (c *Config) IgnoreFileNames() *Config {
 	c.FilenamesIgnored = true
+
+	return c
+}
+
+func (c *Config) EnableLogSentRequests() *Config {
+	c.LogSentRequests = true
 
 	return c
 }
