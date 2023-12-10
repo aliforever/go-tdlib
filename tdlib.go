@@ -113,8 +113,6 @@ func (t *TDLib) receiveUpdates(ctx context.Context) error {
 }
 
 func (t *TDLib) handleUpdateBytes(updateBytes []byte) error {
-	t.updatesChan <- updateBytes
-
 	if updateBytes == nil || len(updateBytes) == 0 {
 		return nil
 	}
