@@ -2,6 +2,7 @@ package tdlib
 
 import "C"
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/aliforever/go-tdlib/config"
@@ -31,7 +32,7 @@ type Manager struct {
 }
 
 // NewManager creates a new Manager instance
-func NewManager(handlers *ManagerHandlers, options *ManagerOptions) *Manager {
+func NewManager(ctx context.Context, handlers *ManagerHandlers, options *ManagerOptions) *Manager {
 	if options != nil {
 		C.set_log_message_callback(C.int(options.LogVerbosityLevel))
 
@@ -56,7 +57,7 @@ func NewManager(handlers *ManagerHandlers, options *ManagerOptions) *Manager {
 		options:  options,
 	}
 
-	go manager.receiveUpdates()
+	go manager.receiveUpdates(ctx)
 
 	return manager
 }
@@ -102,8 +103,15 @@ func (m *Manager) receiveNextUpdate(timeout float64) []byte {
 	return []byte(C.GoString(result))
 }
 
-func (m *Manager) receiveUpdates() {
+func (m *Manager) receiveUpdates(ctx context.Context) {
 	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			// Continue receiving updates
+		}
+
 		updateBytes := m.receiveNextUpdate(10)
 
 		if updateBytes == nil || len(updateBytes) == 0 {

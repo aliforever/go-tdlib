@@ -4,7 +4,7 @@ ENV TZ=Asia/Istanbul
 
 RUN apk update
 RUN apk upgrade
-RUN apk install tzdata -y
+RUN apk add tzdata
 
 # Installing & Building TDLib
 RUN apk add --update alpine-sdk linux-headers git zlib-dev openssl-dev gperf php cmake
@@ -15,6 +15,3 @@ RUN mkdir build
 WORKDIR build
 RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
 RUN cmake --build . --target install
-
-FROM apline:latest
-

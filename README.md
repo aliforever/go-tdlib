@@ -14,46 +14,48 @@ As the old interface "will be removed in TDLib 2.0.0"
 In the new design there's a Manager struct that holds a map of channel for each client id. So you can have multiple clients in your application.
 
 ### Usage:
+
 ```go
 package main
 
 import (
+  "context"
   "github.com/aliforever/go-tdlib"
   "github.com/aliforever/go-tdlib/config"
   "fmt"
 )
 
 func main() {
-  managerHandlers := tdlib.NewManagerHandlers(). 
-    SetRawIncomingEventHandler(func(eventBytes []byte) {
-        fmt.Println(string(eventBytes))
-    })
-  
+  managerHandlers := tdlib.NewManagerHandlers().
+          SetRawIncomingEventHandler(func(eventBytes []byte) {
+            fmt.Println(string(eventBytes))
+          })
+
   managerOptions := tdlib.NewManagerOptions().
     SetLogVerbosityLevel(6).
     SetLogPath("logs.txt")
-  
+
   // Or you can pass nil for both handlers and options
-  m := tdlib.NewManager(managerHandlers, managerOptions)
-  
+  m := tdlib.NewManager(context.Background(), managerHandlers, managerOptions)
+
   // NewClientOptions
   cfg := config.New().
     SetFilesDirectory("./tdlib/tdlib-files").
     SetDatabaseDirectory("./tdlib/tdlib-db")
 
   h := tdlib.NewHandlers().
-	  SetRawIncomingEventHandler(func(eventBytes []byte) {
-	    fmt.Println(string(eventBytes))
-	  })
+          SetRawIncomingEventHandler(func(eventBytes []byte) {
+            fmt.Println(string(eventBytes))
+          })
 
   apiID := int64(123456)
   apiHash := "a1234b1234c1234d1234f345667"
-  
+
   client := m.NewClient(apiID, apiHash, h, cfg, nil)
 
-  err := client.ReceiveUpdates()
+  err := client.ReceiveUpdates(context.Background())
   if err != nil {
-	  panic(err)
+    panic(err)
   }
 }
 ```

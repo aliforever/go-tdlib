@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"github.com/aliforever/go-tdlib"
@@ -38,11 +39,11 @@ func (c *Client) Start() error {
 		SetErrorHandler(c.onError).
 		AddOnNewMessageHandler(c.onNewOutgoingMessage, tdlib.NewMessageFilters().SetIsOutgoingTrue())
 
-	manager := tdlib.NewManager(nil, nil)
+	manager := tdlib.NewManager(context.Background(), nil, nil)
 
 	c.client = manager.NewClient(1, "e", h, cfg, nil)
 
-	return c.client.ReceiveUpdates()
+	return c.client.ReceiveUpdates(context.Background())
 }
 
 func (c *Client) onNewOutgoingMessage(message *incomingevents.UpdateNewMessage) {
