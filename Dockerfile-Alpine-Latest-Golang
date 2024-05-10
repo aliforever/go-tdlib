@@ -1,0 +1,25 @@
+FROM alpine:latest as builder
+
+ENV TZ=Asia/Istanbul
+
+RUN apk update
+RUN apk upgrade
+RUN apk add tzdata
+
+# Installing & Building TDLib
+RUN apk add --update alpine-sdk linux-headers git zlib-dev openssl-dev gperf php cmake
+RUN git clone https://github.com/tdlib/td.git
+WORKDIR td
+RUN rm -rf build
+RUN mkdir build
+WORKDIR build
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
+RUN cmake --build . --target install
+
+FROM alpine:latest
+
+COPY --from=builder /usr/local/lib/libtd* /usr/local/lib/
+COPY --from=builder /usr/local/include/td/telegram/* /usr/local/include/td/telegram/
+COPY --from=builder /usr/local/include/td/tl/* /usr/local/include/td/tl/
+
+COPY --from=golang:1.22.3-alpine /usr/local/go/ /usr/local/go/
