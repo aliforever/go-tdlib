@@ -5,10 +5,12 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/aliforever/go-tdlib/config"
-	"github.com/sirupsen/logrus"
 	"sync"
 	"unsafe"
+
+	"github.com/sirupsen/logrus"
+
+	"github.com/aliforever/go-tdlib/config"
 )
 
 // #cgo linux CFLAGS: -I/usr/local/include
@@ -36,7 +38,18 @@ func NewManager(ctx context.Context, handlers *ManagerHandlers, options *Manager
 	if options != nil {
 		C.set_log_message_callback(C.int(options.LogVerbosityLevel))
 
-		if options.LogPath != "" {
+		if options.DisableLogging {
+			cfgBytes, _ := json.Marshal(map[string]interface{}{
+				"@type": "setLogStream",
+				"log_stream": map[string]interface{}{
+					"@type": "logStreamEmpty",
+				},
+			})
+
+			query := C.CString(string(cfgBytes))
+			C.td_execute(query)
+			C.free(unsafe.Pointer(query))
+		} else if options.LogPath != "" {
 			cfgBytes, _ := json.Marshal(map[string]interface{}{
 				"@type": "setLogStream",
 				"log_stream": map[string]interface{}{
