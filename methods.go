@@ -2,6 +2,7 @@ package tdlib
 
 import (
 	"encoding/json"
+
 	"github.com/aliforever/go-tdlib/entities"
 	"github.com/aliforever/go-tdlib/incomingevents"
 	"github.com/aliforever/go-tdlib/outgoingevents"
@@ -306,5 +307,11 @@ func (t *TDLib) JoinGroupCall(
 		IsMuted:       isMuted,
 		IsMyVideo:     isMyVideo,
 		InviteHash:    inviteHash,
+	})
+}
+
+func (t *TDLib) SearchPublicChat(username string) (*incomingevents.GetChatResponse, error) {
+	return send[incomingevents.GetChatResponse](t, outgoingevents.SearchPublicChat{
+		Username: username,
 	})
 }
