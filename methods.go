@@ -54,6 +54,154 @@ func (t *TDLib) SetTdlibParameters() error {
 	return err
 }
 
+func (t *TDLib) AddProxyHttp(
+	server string,
+	port int64,
+	enable bool,
+	username string,
+	password string,
+	httpOnly bool,
+) (*entities.Proxy, error) {
+	return send[entities.Proxy](t, outgoingevents.AddProxy{
+		Server: server,
+		Port:   port,
+		Enable: enable,
+
+		Proxy: &entities.ProxyHttp{
+			Username: username,
+			Password: password,
+			HttpOnly: httpOnly,
+		},
+	})
+}
+
+func (t *TDLib) AddProxyMtProto(
+	server string,
+	port int64,
+	enable bool,
+	secret string,
+) (*entities.Proxy, error) {
+	return send[entities.Proxy](t, outgoingevents.AddProxy{
+		Server: server,
+		Port:   port,
+		Enable: enable,
+
+		Proxy: &entities.ProxyMtproto{
+			Secret: secret,
+		},
+	})
+}
+
+func (t *TDLib) AddProxySocks5(
+	server string,
+	port int64,
+	enable bool,
+	username string,
+	password string,
+) (*entities.Proxy, error) {
+	return send[entities.Proxy](t, outgoingevents.AddProxy{
+		Server: server,
+		Port:   port,
+		Enable: enable,
+
+		Proxy: &entities.ProxySocks5{
+			Username: username,
+			Password: password,
+		},
+	})
+}
+
+func (t *TDLib) EditProxyHttp(
+	id int64,
+	server string,
+	port int64,
+	enable bool,
+	username string,
+	password string,
+	httpOnly bool,
+) (*entities.Proxy, error) {
+	return send[entities.Proxy](t, outgoingevents.EditProxy{
+		ProxyID: id,
+		Server:  server,
+		Port:    port,
+		Enable:  enable,
+
+		Proxy: &entities.ProxyHttp{
+			Username: username,
+			Password: password,
+			HttpOnly: httpOnly,
+		},
+	})
+}
+
+func (t *TDLib) EditProxyMtProto(
+	id int64,
+	server string,
+	port int64,
+	enable bool,
+	secret string,
+) (*entities.Proxy, error) {
+	return send[entities.Proxy](t, outgoingevents.EditProxy{
+		ProxyID: id,
+		Server:  server,
+		Port:    port,
+		Enable:  enable,
+
+		Proxy: &entities.ProxyMtproto{
+			Secret: secret,
+		},
+	})
+}
+
+func (t *TDLib) EditProxySocks5(
+	id int64,
+	server string,
+	port int64,
+	enable bool,
+	username string,
+	password string,
+) (*entities.Proxy, error) {
+	return send[entities.Proxy](t, outgoingevents.EditProxy{
+		ProxyID: id,
+		Server:  server,
+		Port:    port,
+		Enable:  enable,
+
+		Proxy: &entities.ProxySocks5{
+			Username: username,
+			Password: password,
+		},
+	})
+}
+
+func (t *TDLib) RemoveProxy(id int64) error {
+	_, err := send[any](t, outgoingevents.RemoveProxy{
+		ProxyID: id,
+	})
+
+	return err
+}
+
+func (t *TDLib) EnableProxy(id int64) error {
+	_, err := send[any](t, outgoingevents.RemoveProxy{
+		ProxyID: id,
+	})
+
+	return err
+}
+
+func (t *TDLib) GetProxyLink(id int64) (*entities.HttpUrl, error) {
+	return send[entities.HttpUrl](t, outgoingevents.GetProxyLink{
+		ProxyID: id,
+	})
+}
+
+func (t *TDLib) PingProxy(id int64) (*entities.Seconds, error) {
+	return send[entities.Seconds](t, outgoingevents.PingProxy{
+		ProxyID: id,
+	})
+}
+
 func (t *TDLib) SetAuthenticationPhoneNumber(phoneNumber string, settings *entities.PhoneNumberAuthenticationSettings) error {
 	_, err := send[map[string]interface{}](t, outgoingevents.SetAuthenticationPhoneNumber{
 		PhoneNumber: phoneNumber,

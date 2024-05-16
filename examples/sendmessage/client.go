@@ -4,16 +4,17 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"github.com/aliforever/go-tdlib"
-	"github.com/aliforever/go-tdlib/config"
-	"github.com/aliforever/go-tdlib/entities"
-	"github.com/aliforever/go-tdlib/incomingevents"
 	"io"
 	"net/http"
 	"net/url"
 	"os"
 	"strings"
 	"time"
+
+	"github.com/aliforever/go-tdlib"
+	"github.com/aliforever/go-tdlib/config"
+	"github.com/aliforever/go-tdlib/entities"
+	"github.com/aliforever/go-tdlib/incomingevents"
 )
 
 type Client struct {
@@ -117,6 +118,30 @@ func (c *Client) onAuthorizationStateChange(newState entities.AuthorizationState
 			fmt.Printf("Error: %s\n", err.Error())
 			return
 		}
+
+		/*if rees, err := c.client.AddProxyHttp(
+			"proxy.example.com",
+			80,
+			true,
+			"username",
+			"password",
+			false,
+		); err != nil {
+			fmt.Printf("Error: %s\n", err.Error())
+			return
+		} else {
+			j, _ := json.Marshal(rees)
+
+			fmt.Printf("AddProxyHttp: %s\n", j)
+
+			resP, err := c.client.PingProxy(rees.ID)
+			if err != nil {
+				fmt.Printf("Error: %s\n", err.Error())
+				return
+			}
+
+			fmt.Printf("Proxy Link: %.f\n", resP.Seconds)
+		}*/
 	case entities.AuthorizationStateTypeAwaitingPhoneNumber:
 		c.receivePhoneNumberFromChannel()
 	case entities.AuthorizationStateTypeAwaitingCode:
@@ -226,7 +251,7 @@ func (c *Client) receiveInputFromQasedlu(message string) (string, error) {
 	return string(b), nil
 }
 
-func (c *Client) onRawIncomingEvent(bytes []byte) {
+func (c *Client) onRawIncomingEvent(_ []byte) {
 	return
 }
 
