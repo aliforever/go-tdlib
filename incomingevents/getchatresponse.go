@@ -61,7 +61,7 @@ type GetChatResponse struct {
 				LastReadOutboxMessageId int           `json:"last_read_outbox_message_id"`
 				LastMessageId           int           `json:"last_message_id"`
 			} `json:"reply_info"`
-			Reactions []interface{} `json:"reactions"`
+			Reactions any `json:"reactions"`
 		} `json:"interaction_info"`
 		UnreadReactions   []interface{} `json:"unread_reactions"`
 		ReplyInChatId     int           `json:"reply_in_chat_id"`
