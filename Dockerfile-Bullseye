@@ -1,0 +1,18 @@
+FROM debian:bullseye-slim AS builder
+
+RUN apt-get update
+RUN apt-get upgrade -y
+RUN apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake g++ -y
+
+RUN git clone https://github.com/tdlib/td.git
+WORKDIR /td
+RUN rm -rf build
+RUN mkdir build
+WORKDIR /td/build
+RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
+RUN cmake --build . --target install
+
+FROM golang:1.23-bullseye
+
+COPY --from=builder /usr/local /usr/local
+COPY --from=golang:1.23-bullseye /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/

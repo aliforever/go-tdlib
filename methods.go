@@ -295,6 +295,17 @@ func (t *TDLib) DownloadFile(
 	}, options...)
 }
 
+func (t *TDLib) DeleteFile(
+	fileID int64,
+	options ...*SendOptions,
+) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.DeleteFile{
+		FileID: fileID,
+	}, options...)
+
+	return err
+}
+
 func (t *TDLib) ReadFilePart(fileID, offset, count int64) (*incomingevents.ReadFilePart, error) {
 	return send[incomingevents.ReadFilePart](t, outgoingevents.ReadFilePart{
 		FileID: fileID,

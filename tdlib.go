@@ -11,14 +11,16 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/aliforever/go-tdlib/config"
-	"github.com/aliforever/go-tdlib/incomingevents"
-	"github.com/aliforever/go-tdlib/outgoingevents"
-	"github.com/google/uuid"
-	"github.com/sirupsen/logrus"
 	"math/rand"
 	"sync"
 	"time"
+
+	"github.com/google/uuid"
+	"github.com/sirupsen/logrus"
+
+	"github.com/aliforever/go-tdlib/config"
+	"github.com/aliforever/go-tdlib/incomingevents"
+	"github.com/aliforever/go-tdlib/outgoingevents"
 )
 
 type TDLib struct {
@@ -324,6 +326,7 @@ func _send[ResponseType any](
 	t.removeResponseChannel(requestID, ch)
 
 	var errEvent incomingevents.ErrorEvent
+
 	err = json.Unmarshal(resp, &errEvent)
 	if err != nil {
 		return nil, err
@@ -341,6 +344,7 @@ func _send[ResponseType any](
 	}
 
 	var respObj *ResponseType
+
 	err = json.Unmarshal(resp, &respObj)
 	if err != nil {
 		return nil, err
