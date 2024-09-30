@@ -328,7 +328,31 @@ func (t *TDLib) GetMessage(chatID, messageID int64) (*entities.Message, error) {
 	})
 }
 
-func (t *TDLib) GetChatHistory(chatID, fromMessageID, offset int64, limit uint64, onlyLocal bool) (*incomingevents.GetChatHistoryResponse, error) {
+func (t *TDLib) GetChatEventLog(
+	chatID int64,
+	searchQuery string,
+	fromEventID int64,
+	limit int64,
+	filters *entities.ChatEventLogFilters,
+	userIDs []int64,
+) (*entities.ChatEvents, error) {
+	return send[entities.ChatEvents](t, outgoingevents.GetChatEventLog{
+		ChatID:    chatID,
+		Query:     searchQuery,
+		FromEvent: fromEventID,
+		Limit:     limit,
+		Filters:   filters,
+		UserIDs:   userIDs,
+	})
+}
+
+func (t *TDLib) GetChatHistory(
+	chatID,
+	fromMessageID,
+	offset int64,
+	limit uint64,
+	onlyLocal bool,
+) (*incomingevents.GetChatHistoryResponse, error) {
 	return send[incomingevents.GetChatHistoryResponse](t, outgoingevents.GetChatHistory{
 		ChatID:        chatID,
 		FromMessageID: fromMessageID,
