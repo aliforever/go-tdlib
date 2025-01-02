@@ -1,6 +1,9 @@
 package entities
 
-import "encoding/json"
+import (
+	"encoding/json"
+	"fmt"
+)
 
 type MessageReplyMarkup struct {
 	Type string `json:"@type"`
@@ -21,7 +24,7 @@ func (m *MessageReplyMarkup) UnmarshalJSON(b []byte) error {
 
 	err := json.Unmarshal(b, &t)
 	if err != nil {
-		return err
+		return fmt.Errorf("error unmarshaling event to baseMarkup: %s", err)
 	}
 
 	rp := MessageReplyMarkup{Type: t.Type}
@@ -38,7 +41,7 @@ func (m *MessageReplyMarkup) UnmarshalJSON(b []byte) error {
 	}
 
 	if err != nil {
-		return err
+		return fmt.Errorf("error unmarshaling event to MessageReplyMarkup: %s", err)
 	}
 
 	*m = rp

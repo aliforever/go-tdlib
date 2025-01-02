@@ -96,7 +96,8 @@ func (s ReplyMarkupRemoveKeyboard) Type() string {
 
 type KeyboardButtonType struct {
 	Text string `json:"text"`
-	Type string `json:"type"`
+	Type string `json:"@type"`
+	Data any    `json:"type"`
 }
 
 type ReplyMarkupShowKeyboard struct {

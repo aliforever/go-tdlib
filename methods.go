@@ -202,7 +202,10 @@ func (t *TDLib) PingProxy(id int64) (*entities.Seconds, error) {
 	})
 }
 
-func (t *TDLib) SetAuthenticationPhoneNumber(phoneNumber string, settings *entities.PhoneNumberAuthenticationSettings) error {
+func (t *TDLib) SetAuthenticationPhoneNumber(
+	phoneNumber string,
+	settings *entities.PhoneNumberAuthenticationSettings,
+) error {
 	_, err := send[map[string]interface{}](t, outgoingevents.SetAuthenticationPhoneNumber{
 		PhoneNumber: phoneNumber,
 		Settings:    settings,
