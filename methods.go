@@ -501,3 +501,9 @@ func (t *TDLib) SearchPublicChat(username string) (*incomingevents.GetChatRespon
 		Username: username,
 	})
 }
+
+func (t *TDLib) GetMessageLinkInfo(address string) (*entities.MessageLinkInfo, error) {
+	return send[entities.MessageLinkInfo](t, outgoingevents.GetMessageLinkInfo{
+		URL: address,
+	})
+}

@@ -1,0 +1,42 @@
+FROM debian:bullseye-slim as builder
+
+# Set environment variables to avoid prompts
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update, upgrade, and install required packages
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+        make \
+        git \
+        zlib1g-dev \
+        libssl-dev \
+        gperf \
+        cmake \
+        g++ && \
+    rm -rf /var/lib/apt/lists/*
+
+COPY --from=golang:1.23-bullseye /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+
+# Clone the telegram-bot-api repository
+RUN git clone --recursive https://github.com/tdlib/telegram-bot-api.git /telegram-bot-api
+
+# Build the telegram-bot-api
+WORKDIR /telegram-bot-api
+RUN rm -rf build && \
+    mkdir build && \
+    cd build && \
+    cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local .. && \
+    cmake --build . --target install
+
+# Verify the installation
+RUN ls -l /usr/local/bin/telegram-bot-api*
+
+FROM debian:bullseye-slim
+
+COPY --from=builder /usr/local/bin/telegram-bot-api* /usr/local/bin/
+
+WORKDIR /telegram-bot-api
+
+CMD ["/bin/bash"]
+#ENTRYPOINT ["/usr/local/bin/telegram-bot-api"]
