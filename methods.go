@@ -309,6 +309,35 @@ func (t *TDLib) DeleteFile(
 	return err
 }
 
+func (t *TDLib) GetUser(
+	userID int64,
+	options ...*SendOptions,
+) (*entities.User, error) {
+	return send[entities.User](t, outgoingevents.GetUser{
+		UserID: userID,
+	}, options...)
+}
+
+func (t *TDLib) SetMessageSenderBlockListMain(
+	senderID entities.SenderID,
+	options ...*SendOptions,
+) (*entities.User, error) {
+	return send[entities.User](t, outgoingevents.SetMessageSenderBlockList{
+		SenderId:  senderID,
+		BlockList: entities.BlockListMain(),
+	}, options...)
+}
+
+func (t *TDLib) SetMessageSenderBlockListStories(
+	senderID entities.SenderID,
+	options ...*SendOptions,
+) (*entities.User, error) {
+	return send[entities.User](t, outgoingevents.SetMessageSenderBlockList{
+		SenderId:  senderID,
+		BlockList: entities.BlockListStories(),
+	}, options...)
+}
+
 func (t *TDLib) ReadFilePart(fileID, offset, count int64) (*incomingevents.ReadFilePart, error) {
 	return send[incomingevents.ReadFilePart](t, outgoingevents.ReadFilePart{
 		FileID: fileID,
