@@ -3,6 +3,7 @@ package outgoingevents
 import (
 	"encoding/json"
 	"fmt"
+
 	"github.com/aliforever/go-tdlib/entities"
 )
 
@@ -75,6 +76,23 @@ func (s SendMessage) MarshalJSON() ([]byte, error) {
 				InputMessageVideo: t,
 			},
 		})
+	case *entities.InputMessagePhoto:
+		type InputMessagePhoto struct {
+			Type string `json:"@type"`
+			*entities.InputMessagePhoto
+		}
+
+		return json.Marshal(&struct {
+			*basicSendMessage
+			InputMessageContent *InputMessagePhoto `json:"input_message_content"`
+		}{
+			basicSendMessage: &b,
+			InputMessageContent: &InputMessagePhoto{
+				Type:              t.Type(),
+				InputMessagePhoto: t,
+			},
+		},
+		)
 	default:
 		return nil, fmt.Errorf("invalid type")
 	}
