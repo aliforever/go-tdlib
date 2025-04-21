@@ -86,3 +86,52 @@ func NewInputMessageVideoLocal(
 		Ttl:               ttl,
 	}
 }
+
+// NewInputMessagePhotoFileID creates a new InputMessagePhoto
+func NewInputMessagePhotoFileID(
+	fileID int64,
+	thumbnail *InputThumbnail,
+	width int64,
+	height int64,
+	caption *FormattedText,
+) *InputMessagePhoto {
+	return &InputMessagePhoto{
+		Photo:     NewInputFileID(fileID),
+		Thumbnail: thumbnail,
+		Width:     width,
+		Height:    height,
+		Caption:   caption,
+	}
+}
+
+func NewInputMessagePhotoRemote(
+	remoteFileID string,
+	thumbnail *InputThumbnail,
+	width int64,
+	height int64,
+	caption *FormattedText,
+) *InputMessagePhoto {
+	return &InputMessagePhoto{
+		Photo:     NewInputFileRemote(remoteFileID),
+		Thumbnail: thumbnail,
+		Width:     width,
+		Height:    height,
+		Caption:   caption,
+	}
+}
+
+func NewInputMessagePhotoLocal(
+	path string,
+	thumbnail *InputThumbnail,
+	width int64,
+	height int64,
+	caption *FormattedText,
+) *InputMessagePhoto {
+	return &InputMessagePhoto{
+		Photo:     NewInputFileLocal(path),
+		Thumbnail: thumbnail,
+		Width:     width,
+		Height:    height,
+		Caption:   caption,
+	}
+}
