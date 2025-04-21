@@ -19,6 +19,7 @@ type Content struct {
 	Audio     *Audio     `json:"audio"`
 	VoiceNote *VoiceNote `json:"voice_note"`
 	Text      *Text      `json:"text"`
+	Photo     *Photo     `json:"photo"`
 	Caption   struct {
 		Type     string `json:"@type"`
 		Text     string `json:"text"`
@@ -31,4 +32,5 @@ type Content struct {
 			} `json:"type"`
 		} `json:"entities"`
 	} `json:"caption"`
+	IsSecret bool `json:"is_secret"`
 }
