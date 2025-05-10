@@ -1,15 +1,21 @@
 FROM debian:bullseye-slim AS builder
 
-RUN apt-get update
-RUN apt-get upgrade -y
-RUN apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake g++ -y
+RUN apt-get update && apt-get upgrade -y
+RUN apt-get install make git zlib1g-dev libssl-dev gperf php-cli cmake gcc-9 g++-9 -y
 
 RUN git clone https://github.com/tdlib/td.git
 WORKDIR /td
 RUN rm -rf build
 RUN mkdir build
 WORKDIR /td/build
-RUN cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX:PATH=/usr/local ..
+
+# Explicitly tell CMake which compilers to use
+RUN cmake -DCMAKE_BUILD_TYPE=Release \
+          -DCMAKE_INSTALL_PREFIX:PATH=/usr/local \
+          -DCMAKE_C_COMPILER=/usr/bin/gcc-9 \
+          -DCMAKE_CXX_COMPILER=/usr/bin/g++-9 \
+          ..
+
 RUN cmake --build . --target install
 
 FROM golang:1.23.1-bullseye
