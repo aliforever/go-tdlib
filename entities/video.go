@@ -2,7 +2,7 @@ package entities
 
 type AlternativeVideo struct {
 	Type    string `json:"@type"`
-	ID      int64  `json:"id"`
+	ID      string `json:"id"`
 	Width   int64  `json:"width"`
 	Height  int64  `json:"height"`
 	Codec   string `json:"codec"`

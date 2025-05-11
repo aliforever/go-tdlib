@@ -51,5 +51,4 @@ type Message struct {
 	Content           Content             `json:"content"`
 	ReplyMarkup       *MessageReplyMarkup `json:"reply_markup"`
 	ReplyTo           *MessageReplyTo     `json:"reply_to"`
-	//
 }
