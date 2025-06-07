@@ -547,8 +547,8 @@ func (t *TDLib) SetChatMemberStatus(chatID int64, userID int64, status entities.
 	return err
 }
 
-func (t *TDLib) GetChatAdministrators(chatID int64) (*entities.MessageSenders, error) {
-	return send[entities.MessageSenders](t, outgoingevents.GetChatAdministrators{
+func (t *TDLib) GetChatAdministrators(chatID int64) (*entities.ChatAdministrators, error) {
+	return send[entities.ChatAdministrators](t, outgoingevents.GetChatAdministrators{
 		ChatID: chatID,
 	})
 }
