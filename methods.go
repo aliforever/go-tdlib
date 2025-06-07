@@ -536,3 +536,19 @@ func (t *TDLib) GetMessageLinkInfo(address string) (*entities.MessageLinkInfo, e
 		URL: address,
 	})
 }
+
+func (t *TDLib) SetChatMemberStatus(chatID int64, userID int64, status entities.ChatMemberStatus) error {
+	_, err := send[map[string]interface{}](t, outgoingevents.SetChatMemberStatus{
+		ChatID:   chatID,
+		MemberID: userID,
+		Status:   status,
+	})
+
+	return err
+}
+
+func (t *TDLib) GetChatAdministrators(chatID int64) (*entities.MessageSenders, error) {
+	return send[entities.MessageSenders](t, outgoingevents.GetChatAdministrators{
+		ChatID: chatID,
+	})
+}
