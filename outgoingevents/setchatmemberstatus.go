@@ -25,7 +25,7 @@ func (s SetChatMemberStatus) MarshalJSON() ([]byte, error) {
 
 	m := map[string]interface{}{
 		"chat_id":   s.ChatID,
-		"member_id": s.MemberID,
+		"member_id": entities.MessageSenderUser(s.MemberID),
 		"status": chatMemberStatus{
 			Type:             s.Status.Type(),
 			ChatMemberStatus: s.Status,
