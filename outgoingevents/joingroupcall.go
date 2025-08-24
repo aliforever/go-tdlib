@@ -1,17 +1,66 @@
 package outgoingevents
 
-import "github.com/aliforever/go-tdlib/entities"
+import (
+	"encoding/json"
+	"fmt"
+
+	"github.com/aliforever/go-tdlib/entities"
+)
 
 type JoinGroupCall struct {
-	GroupCallID   int64                   `json:"group_call_id"`
-	ParticipantID *entities.MessageSender `json:"participant_id"`
-	AudioSourceID int64                   `json:"audio_source_id"`
-	Payload       string                  `json:"payload"`
-	IsMuted       bool                    `json:"is_muted"`
-	IsMyVideo     bool                    `json:"is_my_video_enabled"`
-	InviteHash    string                  `json:"invite_hash"`
+	InputGroupCall entities.InputGroupCall          `json:"input_group_call"`
+	JoinParameters entities.GroupCallJoinParameters `json:"join_parameters"`
 }
 
 func (JoinGroupCall) Type() string {
 	return "joinGroupCall"
+}
+
+func (s JoinGroupCall) MarshalJSON() ([]byte, error) {
+	type basicJoinGroupCall struct {
+		Type           string                           `json:"@type"`
+		InputGroupCall entities.InputGroupCall          `json:"input_group_call"`
+		JoinParameters entities.GroupCallJoinParameters `json:"join_parameters"`
+	}
+
+	b := basicJoinGroupCall{
+		Type: s.Type(),
+	}
+
+	switch t := s.InputGroupCall.(type) {
+	case *entities.InputGroupCallLink:
+		type JoinGroupCallLink struct {
+			Type string `json:"@type"`
+			*entities.InputGroupCallLink
+		}
+
+		return json.Marshal(&struct {
+			*basicJoinGroupCall
+			InputGroupCall *JoinGroupCallLink `json:"input_group_call"`
+		}{
+			basicJoinGroupCall: &b,
+			InputGroupCall: &JoinGroupCallLink{
+				Type:               t.Type(),
+				InputGroupCallLink: t,
+			},
+		})
+	case *entities.InputGroupCallMessage:
+		type JoinGroupCallMessage struct {
+			Type string `json:"@type"`
+			*entities.InputGroupCallMessage
+		}
+
+		return json.Marshal(&struct {
+			*basicJoinGroupCall
+			InputGroupCall *JoinGroupCallMessage `json:"input_group_call"`
+		}{
+			basicJoinGroupCall: &b,
+			InputGroupCall: &JoinGroupCallMessage{
+				Type:                  t.Type(),
+				InputGroupCallMessage: t,
+			},
+		})
+	default:
+		return nil, fmt.Errorf("invalid type")
+	}
 }

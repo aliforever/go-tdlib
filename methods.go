@@ -505,23 +505,45 @@ func (t *TDLib) LoadGroupCallParticipants(groupCallID int64, limit int64) error 
 	return err
 }
 
-func (t *TDLib) JoinGroupCall(
-	groupCallID int64,
+func (t *TDLib) JoinGroupCallMessage(
+	chatID int64,
+	messageID int64,
 	payload string,
-	joinAs *entities.MessageSender, //  pass null to join as self
 	audioSourceID int64,
 	isMuted bool,
 	isMyVideo bool,
-	inviteHash string,
 ) (*entities.RawText, error) {
 	return send[entities.RawText](t, outgoingevents.JoinGroupCall{
-		GroupCallID:   groupCallID,
-		ParticipantID: joinAs,
-		AudioSourceID: audioSourceID,
-		Payload:       payload,
-		IsMuted:       isMuted,
-		IsMyVideo:     isMyVideo,
-		InviteHash:    inviteHash,
+		InputGroupCall: &entities.InputGroupCallMessage{
+			ChatID:    chatID,
+			MessageID: messageID,
+		},
+		JoinParameters: entities.GroupCallJoinParameters{
+			AudioSourceID:    audioSourceID,
+			Payload:          payload,
+			IsMuted:          isMuted,
+			IsMyVideoEnabled: isMyVideo,
+		},
+	})
+}
+
+func (t *TDLib) JoinGroupCallLink(
+	link string,
+	payload string,
+	audioSourceID int64,
+	isMuted bool,
+	isMyVideo bool,
+) (*entities.RawText, error) {
+	return send[entities.RawText](t, outgoingevents.JoinGroupCall{
+		InputGroupCall: &entities.InputGroupCallLink{
+			Link: link,
+		},
+		JoinParameters: entities.GroupCallJoinParameters{
+			AudioSourceID:    audioSourceID,
+			Payload:          payload,
+			IsMuted:          isMuted,
+			IsMyVideoEnabled: isMyVideo,
+		},
 	})
 }
 

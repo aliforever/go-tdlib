@@ -18,7 +18,7 @@ RUN cmake -DCMAKE_BUILD_TYPE=Release \
 
 RUN cmake --build . --target install
 
-FROM golang:1.23.1-bullseye
+FROM golang:1.24.4-bullseye
 
 COPY --from=builder /usr/local /usr/local
-COPY --from=golang:1.23.1-bullseye /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=golang:1.24.4-bullseye /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
