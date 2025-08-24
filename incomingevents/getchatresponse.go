@@ -1,15 +1,14 @@
 package incomingevents
 
+import "github.com/aliforever/go-tdlib/entities"
+
 type GetChatResponse struct {
 	Event
 
-	Id   int64 `json:"id"`
-	Type struct {
-		Type         string `json:"@type"`
-		SupergroupId int    `json:"supergroup_id"`
-		IsChannel    bool   `json:"is_channel"`
-	} `json:"type"`
-	Title       string `json:"title"`
+	Id          int64              `json:"id"`
+	Type        *entities.ChatType `json:"type"`
+	Title       string             `json:"title"`
+	Photo       any                `json:"photo"`
 	Permissions struct {
 		Type                  string `json:"@type"`
 		CanSendMessages       bool   `json:"can_send_messages"`

@@ -547,6 +547,20 @@ func (t *TDLib) JoinGroupCallLink(
 	})
 }
 
+func (t *TDLib) JoinVideoChat(
+	groupCallID int64,
+	participantID *entities.MessageSender,
+	joinParameters *entities.GroupCallJoinParameters,
+	inviteHash *string,
+) (*entities.RawText, error) {
+	return send[entities.RawText](t, outgoingevents.JoinVideoChat{
+		GroupCallID:    groupCallID,
+		ParticipantID:  participantID,
+		JoinParameters: joinParameters,
+		InviteHash:     inviteHash,
+	})
+}
+
 func (t *TDLib) SearchPublicChat(username string) (*incomingevents.GetChatResponse, error) {
 	return send[incomingevents.GetChatResponse](t, outgoingevents.SearchPublicChat{
 		Username: username,
