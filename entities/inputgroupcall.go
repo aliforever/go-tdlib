@@ -1,5 +1,7 @@
 package entities
 
+import "encoding/json"
+
 type InputGroupCall interface {
 	Type() string
 }
@@ -26,4 +28,20 @@ type GroupCallJoinParameters struct {
 	Payload          string `json:"payload"`
 	IsMuted          bool   `json:"is_muted"`
 	IsMyVideoEnabled bool   `json:"is_my_video_enabled"`
+}
+
+func (g GroupCallJoinParameters) MarshalJSON() ([]byte, error) {
+	data := map[string]interface{}{
+		"@type":               "groupCallJoinParameters",
+		"audio_source_id":     g.AudioSourceID,
+		"payload":             g.Payload,
+		"is_muted":            g.IsMuted,
+		"is_my_video_enabled": g.IsMyVideoEnabled,
+	}
+
+	return json.Marshal(data)
+}
+
+type JoinParameters interface {
+	Type() string
 }
