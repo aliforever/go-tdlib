@@ -41,7 +41,3 @@ func (g GroupCallJoinParameters) MarshalJSON() ([]byte, error) {
 
 	return json.Marshal(data)
 }
-
-type JoinParameters interface {
-	Type() string
-}

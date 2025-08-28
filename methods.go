@@ -550,7 +550,7 @@ func (t *TDLib) JoinGroupCallLink(
 func (t *TDLib) JoinVideoChat(
 	groupCallID int64,
 	participantID *entities.MessageSender,
-	joinParameters entities.JoinParameters,
+	joinParameters *entities.GroupCallJoinParameters,
 	inviteHash string,
 ) (*entities.RawText, error) {
 	return send[entities.RawText](t, outgoingevents.JoinVideoChat{
