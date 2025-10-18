@@ -1,6 +1,6 @@
 package outgoingevents
 
-type ForwardMessage struct {
+type ForwardMessages struct {
 	ChatID          int64   `json:"chat_id"`
 	MessageThreadID int64   `json:"message_thread_id"`
 	FromChatID      int64   `json:"from_chat_id"`
@@ -10,6 +10,6 @@ type ForwardMessage struct {
 	RemoveCaption   bool    `json:"remove_caption"`
 }
 
-func (s ForwardMessage) Type() string {
-	return "forwardMessage"
+func (s ForwardMessages) Type() string {
+	return "forwardMessages"
 }

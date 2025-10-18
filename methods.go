@@ -410,7 +410,7 @@ func (t *TDLib) SendMessage(
 	})
 }
 
-func (t *TDLib) ForwardMessage(
+func (t *TDLib) ForwardMessages(
 	chatID int64,
 	fromChatID int64,
 	replyToMessageID int64,
@@ -419,7 +419,7 @@ func (t *TDLib) ForwardMessage(
 	sendCopy bool,
 	removeCaption bool,
 ) (*incomingevents.Messages, error) {
-	return send[incomingevents.Messages](t, outgoingevents.ForwardMessage{
+	return send[incomingevents.Messages](t, outgoingevents.ForwardMessages{
 		ChatID:          chatID,
 		MessageThreadID: replyToMessageID,
 		FromChatID:      fromChatID,
