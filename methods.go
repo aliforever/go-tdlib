@@ -410,6 +410,26 @@ func (t *TDLib) SendMessage(
 	})
 }
 
+func (t *TDLib) ForwardMessage(
+	chatID int64,
+	fromChatID int64,
+	replyToMessageID int64,
+	messageIDs []int64,
+	options *outgoingevents.SendMessageOptions,
+	sendCopy bool,
+	removeCaption bool,
+) (*incomingevents.Messages, error) {
+	return send[incomingevents.Messages](t, outgoingevents.ForwardMessage{
+		ChatID:          chatID,
+		MessageThreadID: replyToMessageID,
+		FromChatID:      fromChatID,
+		MessageIDs:      messageIDs,
+		Options:         options,
+		SendCopy:        sendCopy,
+		RemoveCaption:   removeCaption,
+	})
+}
+
 func (t *TDLib) DeleteMessages(chatID int64, messageIDs []int64, revoke bool) error {
 	_, err := send[map[string]interface{}](t, outgoingevents.DeleteMessages{
 		ChatID:     chatID,
