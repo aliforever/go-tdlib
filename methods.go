@@ -603,6 +603,14 @@ func (t *TDLib) SetChatMemberStatus(chatID int64, userID int64, status entities.
 	return err
 }
 
+func (t *TDLib) AddChatMember(chatID int64, userID int64, forwardLimit int64) (*entities.FailedToAddMembers, error) {
+	return send[entities.FailedToAddMembers](t, outgoingevents.AddChatMember{
+		ChatID:       chatID,
+		UserID:       userID,
+		ForwardLimit: forwardLimit,
+	})
+}
+
 func (t *TDLib) GetChatAdministrators(chatID int64) (*entities.ChatAdministrators, error) {
 	return send[entities.ChatAdministrators](t, outgoingevents.GetChatAdministrators{
 		ChatID: chatID,
