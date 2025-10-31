@@ -22,6 +22,8 @@ type Handlers struct {
 	onMessageEditedHandlers        []func(data *incomingevents.UpdateMessageEdited)
 	onMessageContentHandlers       []func(data *incomingevents.UpdateMessageContent)
 	onMessageSendSucceededHandlers []func(data *incomingevents.UpdateMessageSendSucceeded)
+	onMessageSendFailedHandlers    []func(data *incomingevents.UpdateMessageSendFailed)
+	onDeleteMessages               []func(data *incomingevents.UpdateDeleteMessages)
 }
 
 func NewHandlers() *Handlers {
@@ -99,6 +101,28 @@ func (h *Handlers) AddOnUpdateMessageSendSucceededHandler(
 	defer h.eventTypeHandlerLocker.Unlock()
 
 	h.onMessageSendSucceededHandlers = append(h.onMessageSendSucceededHandlers, fn)
+
+	return h
+}
+
+func (h *Handlers) AddOnUpdateMessageSendFailedHandler(
+	fn func(data *incomingevents.UpdateMessageSendFailed),
+) *Handlers {
+	h.eventTypeHandlerLocker.Lock()
+	defer h.eventTypeHandlerLocker.Unlock()
+
+	h.onMessageSendFailedHandlers = append(h.onMessageSendFailedHandlers, fn)
+
+	return h
+}
+
+func (h *Handlers) AddOnUpdateDeleteMessagesHandler(
+	fn func(data *incomingevents.UpdateDeleteMessages),
+) *Handlers {
+	h.eventTypeHandlerLocker.Lock()
+	defer h.eventTypeHandlerLocker.Unlock()
+
+	h.onDeleteMessages = append(h.onDeleteMessages, fn)
 
 	return h
 }

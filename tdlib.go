@@ -218,6 +218,27 @@ func (t *TDLib) handleEventType(eventType string, data []byte) {
 			}
 		}
 	}
+
+	if eventType == "updateMessageSendFailed" {
+		for i := range t.handlers.onMessageSendFailedHandlers {
+			handler := t.handlers.onMessageSendFailedHandlers[i]
+
+			if err := NewEventHandler[incomingevents.UpdateMessageSendFailed](handler).Handle(data); err != nil {
+				t.logger.Error(err)
+			}
+		}
+	}
+
+	if eventType == "updateDeleteMessages" {
+		for i := range t.handlers.onDeleteMessages {
+			handler := t.handlers.onDeleteMessages[i]
+
+			if err := NewEventHandler[incomingevents.UpdateDeleteMessages](handler).Handle(data); err != nil {
+				t.logger.Error(err)
+			}
+		}
+	}
+
 }
 
 func (t *TDLib) getEventTypeHandler(eventType string) event {
