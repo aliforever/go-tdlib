@@ -208,6 +208,16 @@ func (t *TDLib) handleEventType(eventType string, data []byte) {
 			}
 		}
 	}
+
+	if eventType == "updateMessageSendSucceeded" {
+		for i := range t.handlers.onMessageSendSucceededHandlers {
+			handler := t.handlers.onMessageSendSucceededHandlers[i]
+
+			if err := NewEventHandler[incomingevents.UpdateMessageSendSucceeded](handler).Handle(data); err != nil {
+				t.logger.Error(err)
+			}
+		}
+	}
 }
 
 func (t *TDLib) getEventTypeHandler(eventType string) event {

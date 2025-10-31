@@ -1,9 +1,10 @@
 package tdlib
 
 import (
+	"sync"
+
 	"github.com/aliforever/go-tdlib/entities"
 	"github.com/aliforever/go-tdlib/incomingevents"
-	"sync"
 )
 
 type Handlers struct {
@@ -17,9 +18,10 @@ type Handlers struct {
 	eventTypeHandlerLocker sync.Mutex
 	eventTypeHandlers      map[string]event
 
-	onNewMessageHandlers     []*newMessageHandler
-	onMessageEditedHandlers  []func(data *incomingevents.UpdateMessageEdited)
-	onMessageContentHandlers []func(data *incomingevents.UpdateMessageContent)
+	onNewMessageHandlers           []*newMessageHandler
+	onMessageEditedHandlers        []func(data *incomingevents.UpdateMessageEdited)
+	onMessageContentHandlers       []func(data *incomingevents.UpdateMessageContent)
+	onMessageSendSucceededHandlers []func(data *incomingevents.UpdateMessageSendSucceeded)
 }
 
 func NewHandlers() *Handlers {
@@ -86,6 +88,17 @@ func (h *Handlers) AddOnUpdateMessageContentHandler(
 	defer h.eventTypeHandlerLocker.Unlock()
 
 	h.onMessageContentHandlers = append(h.onMessageContentHandlers, fn)
+
+	return h
+}
+
+func (h *Handlers) AddOnUpdateMessageSendSucceededHandler(
+	fn func(data *incomingevents.UpdateMessageSendSucceeded),
+) *Handlers {
+	h.eventTypeHandlerLocker.Lock()
+	defer h.eventTypeHandlerLocker.Unlock()
+
+	h.onMessageSendSucceededHandlers = append(h.onMessageSendSucceededHandlers, fn)
 
 	return h
 }
