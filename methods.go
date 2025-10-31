@@ -587,9 +587,33 @@ func (t *TDLib) SearchPublicChat(username string) (*incomingevents.GetChatRespon
 	})
 }
 
+func (t *TDLib) GetInternalLinkForMessage(messageLink string) (*entities.URL, error) {
+	return send[entities.URL](t, outgoingevents.GetInternalLink{
+		LinkType: entities.InternalLinkTypeMessage{
+			URL: messageLink,
+		},
+	})
+}
+
 func (t *TDLib) GetMessageLinkInfo(address string) (*entities.MessageLinkInfo, error) {
 	return send[entities.MessageLinkInfo](t, outgoingevents.GetMessageLinkInfo{
 		URL: address,
+	})
+}
+
+func (t *TDLib) GetMessageLink(
+	messageID int64,
+	chatID int64,
+	mediaTimestamp *int64,
+	forAlbum *bool,
+	isMessageThread *bool,
+) (*entities.MessageLink, error) {
+	return send[entities.MessageLink](t, outgoingevents.GetMessageLink{
+		ChatID:          chatID,
+		MessageID:       messageID,
+		MediaTimestamp:  mediaTimestamp,
+		ForAlbum:        forAlbum,
+		InMessageThread: isMessageThread,
 	})
 }
 
