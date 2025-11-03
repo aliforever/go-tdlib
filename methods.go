@@ -640,3 +640,17 @@ func (t *TDLib) GetChatAdministrators(chatID int64) (*entities.ChatAdministrator
 		ChatID: chatID,
 	})
 }
+
+func (t *TDLib) GetSupergroupMembers(
+	superGroupID int64,
+	filters outgoingevents.SupergroupMembersFilter,
+	offset int64,
+	limit int64,
+) (*entities.ChatMembers, error) {
+	return send[entities.ChatMembers](t, outgoingevents.GetSuperGroupMembers{
+		SupergroupID: superGroupID,
+		Filter:       filters,
+		Offset:       offset,
+		Limit:        limit,
+	})
+}
