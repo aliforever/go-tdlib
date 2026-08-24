@@ -1,6 +1,10 @@
 # go-tdlib
 Golang Telegram Database library Wrapper
 
+## v2 (Go 1.27)
+
+A redesigned v2 lives in [`v2/`](v2) (module `github.com/aliforever/go-tdlib/v2`): fully generated typed API, generic methods (`client.Do(ctx, td.GetMe{})`, typed update subscriptions, union `As`/`Match`), context-based timeouts, and a testable non-generic runtime core. Requires Go 1.27+ and builds with `-tags tdjson`. See [v2/README.md](v2/README.md) and [v2/MIGRATION.md](v2/MIGRATION.md). v1 (this package) is maintenance-only; v1 and v2 cannot run in the same binary.
+
 ### Requirement:
 - Build TDLib for Golang and your operating system. See a [TDLib build instructions generator](https://tdlib.github.io/td/build.html) for detailed instructions on how to build TDLib
 

@@ -1,1 +1,8 @@
 .idea
+.env
+.tdlib-test-data/
+.mcp.json
+.kimi-code/
+v2/mcp.sh
+v2/docker-libs/*
+!v2/docker-libs/README.md
